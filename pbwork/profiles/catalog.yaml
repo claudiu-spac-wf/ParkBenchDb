@@ -1,0 +1,215 @@
+catalogVersion: 1
+profiles:
+  - id: read-reference-point
+    version: 1
+    name: Reference point reads
+    kind: read
+    purpose: Tiny fixed-table primary-key latency
+    tables: [Currency, Branch, AccountType, BenchmarkTableInfo]
+    coverage: {volume: [Tiny], shape: [Narrow, Standard], lob: [none], access: [point], transaction: [single-row], pressure: [low-concurrency], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: Currency, minimumRows: 1}, {name: Branch, minimumRows: 1}, {name: AccountType, minimumRows: 1}, {name: BenchmarkTableInfo, minimumRows: 1}]}
+    parameters: {operationCount: {type: integer, min: 1, default: 1000}}
+    requiresWritableDatabase: false
+    cleanup: none
+    operations:
+      - {id: currency-by-id, handler: point_lookup, table: Currency, access: point, weight: 1, selection: {key: primary, source: BenchmarkTableInfo}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: branch-by-id, handler: point_lookup, table: Branch, access: point, weight: 1, selection: {key: primary, source: BenchmarkTableInfo}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: account-type-by-id, handler: point_lookup, table: AccountType, access: point, weight: 1, selection: {key: primary, source: BenchmarkTableInfo}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: benchmark-info-by-id, handler: point_lookup, table: BenchmarkTableInfo, access: point, weight: 1, selection: {key: primary, source: BenchmarkTableInfo}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+  - id: read-small-table-scan
+    version: 1
+    name: Small-table scans
+    kind: read
+    purpose: Scan and aggregate small reference and master tables
+    tables: [ExchangeRate, Employee, InterestRateHistory, Merchant]
+    coverage: {volume: [Small], shape: [Narrow, Standard], lob: [none], access: [scan, aggregate], transaction: [single-row], pressure: [low-concurrency], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: ExchangeRate, minimumRows: 1}, {name: Employee, minimumRows: 1}, {name: InterestRateHistory, minimumRows: 1}, {name: Merchant, minimumRows: 1}]}
+    parameters: {scanLimit: {type: integer, min: 1, default: 1000}}
+    requiresWritableDatabase: false
+    cleanup: none
+    operations:
+      - {id: rate-scan, handler: table_scan, table: ExchangeRate, access: scan, weight: 1, selection: {limit: 1000, aggregate: count}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 10000}}
+      - {id: employee-scan, handler: table_scan, table: Employee, access: scan, weight: 1, selection: {limit: 1000, aggregate: count}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 10000}}
+      - {id: merchant-scan, handler: table_scan, table: Merchant, access: scan, weight: 1, selection: {limit: 1000, aggregate: count}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 10000}}
+  - id: read-medium-narrow-selective
+    version: 1
+    name: Medium narrow selective reads
+    kind: read
+    purpose: Indexed 1% and 0.1% predicates on narrow rows
+    tables: [CustomerContact, AccountHolder]
+    coverage: {volume: [Medium], shape: [Narrow], lob: [none], access: [selective, point], transaction: [single-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: CustomerContact, minimumRows: 1}, {name: AccountHolder, minimumRows: 1}]}
+    parameters: {selectivity: {type: number, min: 0.001, max: 0.01, default: 0.01}}
+    requiresWritableDatabase: false
+    cleanup: none
+    operations:
+      - {id: contact-selective, handler: indexed_selective, table: CustomerContact, access: random-int, weight: 2, selection: {field: RandomInt100, value: 1, limit: 1000}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1000}}
+      - {id: holder-selective, handler: indexed_selective, table: AccountHolder, access: random-int, weight: 1, selection: {field: RandomInt1000, value: 1, limit: 1000}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1000}}
+  - id: read-medium-wide-selective
+    version: 1
+    name: Medium wide selective reads
+    kind: read
+    purpose: Wide-row point and selective reads
+    tables: [Customer, Loan]
+    coverage: {volume: [Medium], shape: [Wide, Standard], lob: [none], access: [point, selective], transaction: [single-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: Customer, minimumRows: 1}, {name: Loan, minimumRows: 1}]}
+    parameters: {selectivity: {type: number, min: 0.001, max: 0.1, default: 0.01}}
+    requiresWritableDatabase: false
+    cleanup: none
+    operations:
+      - {id: customer-point, handler: point_lookup, table: Customer, access: point, weight: 2, selection: {key: primary, source: BenchmarkTableInfo}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: loan-selective, handler: indexed_selective, table: Loan, access: random-int, weight: 1, selection: {field: RandomInt100, value: 1, limit: 1000}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1000}}
+  - id: read-large-range
+    version: 1
+    name: Large range reads
+    kind: read
+    purpose: Bounded ordered ranges over large transaction tables
+    tables: [AccountStatement, MonthlyBalance, CreditTransaction]
+    coverage: {volume: [Large], shape: [Narrow, Standard], lob: [none], access: [range, aggregate], transaction: [small-batch], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: AccountStatement, minimumRows: 1}, {name: MonthlyBalance, minimumRows: 1}, {name: CreditTransaction, minimumRows: 1}]}
+    parameters: {rangeWidth: {type: integer, min: 1, max: 10000, default: 100}}
+    requiresWritableDatabase: false
+    cleanup: none
+    operations:
+      - {id: statement-range, handler: range_scan, table: AccountStatement, access: range, weight: 1, selection: {key: primary, width: 100}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 10000}}
+      - {id: balance-range, handler: range_scan, table: MonthlyBalance, access: range, weight: 1, selection: {key: primary, width: 100}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 10000}}
+      - {id: credit-range, handler: range_scan, table: CreditTransaction, access: range, weight: 1, selection: {key: primary, width: 100}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 10000}}
+  - id: read-very-large-selective
+    version: 1
+    name: Very-large selective reads
+    kind: read
+    purpose: Indexed selection over very large tables
+    tables: [DebitTransaction, CardAuthorization, AuditLog]
+    coverage: {volume: [Very Large], shape: [Narrow, Standard], lob: [none], access: [point, selective], transaction: [single-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: DebitTransaction, minimumRows: 1}, {name: CardAuthorization, minimumRows: 1}, {name: AuditLog, minimumRows: 1}]}
+    parameters: {selectivity: {type: number, min: 0.001, max: 0.1, default: 0.001}}
+    requiresWritableDatabase: false
+    cleanup: none
+    operations:
+      - {id: debit-point, handler: point_lookup, table: DebitTransaction, access: point, weight: 1, selection: {key: primary, source: BenchmarkTableInfo}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: authorization-selective, handler: indexed_selective, table: CardAuthorization, access: random-int, weight: 1, selection: {field: RandomInt1000, value: 1, limit: 1000}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1000}}
+      - {id: audit-point, handler: point_lookup, table: AuditLog, access: point, weight: 1, selection: {key: primary, source: BenchmarkTableInfo}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+  - id: read-relationship-navigation
+    version: 1
+    name: Relationship navigation
+    kind: read
+    purpose: Parent-to-child customer, account, and transaction traversal
+    tables: [Customer, AccountHolder, Account, DebitTransaction]
+    coverage: {volume: [Medium, Very Large], shape: [Standard], lob: [none], access: [navigate], transaction: [small-batch], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: Customer, minimumRows: 1}, {name: AccountHolder, minimumRows: 1}, {name: Account, minimumRows: 1}, {name: DebitTransaction, minimumRows: 1}]}
+    parameters: {depth: {type: integer, min: 2, max: 4, default: 4}}
+    requiresWritableDatabase: false
+    cleanup: none
+    operations:
+      - {id: customer-account-transaction, handler: relationship_navigation, tables: [Customer, AccountHolder, Account, DebitTransaction], access: navigate, weight: 1, selection: {parent: Customer, depth: 4, limit: 100}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1000}}
+  - id: read-lob-fetch
+    version: 1
+    name: LOB fetches
+    kind: read
+    purpose: Scalar-only versus CLOB and BLOB fetches
+    tables: [CustomerDocument, CustomerNote, StatementDocument, AccountStatement]
+    coverage: {volume: [Medium, Large], shape: [LOB], lob: [none, CLOB, BLOB, both], access: [point], transaction: [single-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: CustomerDocument, minimumRows: 1}, {name: CustomerNote, minimumRows: 1}, {name: StatementDocument, minimumRows: 1}, {name: AccountStatement, minimumRows: 1}]}
+    parameters: {lobMode: {type: string, enum: [scalarOnly, clob, blob, both], default: both}}
+    requiresWritableDatabase: false
+    cleanup: none
+    operations:
+      - {id: document-blob, handler: lob_fetch, table: CustomerDocument, access: point, weight: 1, selection: {lobMode: blob}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: note-clob, handler: lob_fetch, table: CustomerNote, access: point, weight: 1, selection: {lobMode: clob}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: statement-both, handler: lob_fetch, table: StatementDocument, access: point, weight: 1, selection: {lobMode: both}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: statement-scalar, handler: lob_fetch, table: AccountStatement, access: point, weight: 1, selection: {lobMode: scalarOnly}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+  - id: write-narrow-append
+    version: 1
+    name: Narrow append writes
+    kind: write
+    purpose: Schema-valid narrow inserts and small batches
+    tables: [LoginEvent, AuditLog]
+    coverage: {volume: [Large, Very Large], shape: [Narrow], lob: [none], access: [append], transaction: [single-row, small-batch], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: LoginEvent, minimumRows: 0}, {name: AuditLog, minimumRows: 0}, {name: Customer, minimumRows: 1}, {name: Account, minimumRows: 1}]}
+    parameters: {batchSize: {type: integer, min: 1, max: 32, default: 1}}
+    requiresWritableDatabase: true
+    cleanup: isolated-copy
+    operations:
+      - {id: login-append, handler: append_narrow, table: LoginEvent, access: write, weight: 2, selection: {keyDistribution: distributed}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}
+      - {id: audit-append, handler: append_narrow, table: AuditLog, access: write, weight: 1, selection: {keyDistribution: distributed}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}
+  - id: write-wide-update
+    version: 1
+    name: Wide-row updates
+    kind: write
+    purpose: Read-modify-write mutable wide rows
+    tables: [Customer, Loan]
+    coverage: {volume: [Medium], shape: [Wide], lob: [none], access: [update], transaction: [single-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: Customer, minimumRows: 1}, {name: Loan, minimumRows: 1}]}
+    parameters: {updateFraction: {type: number, min: 0.001, max: 1, default: 0.01}}
+    requiresWritableDatabase: true
+    cleanup: isolated-copy
+    operations:
+      - {id: customer-update, handler: update_wide, table: Customer, access: write, weight: 2, selection: {keyDistribution: distributed}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}
+      - {id: loan-update, handler: update_wide, table: Loan, access: write, weight: 1, selection: {keyDistribution: distributed}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}
+  - id: write-lob-update
+    version: 1
+    name: LOB updates
+    kind: write
+    purpose: CLOB and BLOB updates
+    tables: [CustomerNote, StatementDocument]
+    coverage: {volume: [Medium], shape: [LOB], lob: [CLOB, BLOB], access: [update], transaction: [single-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: CustomerNote, minimumRows: 1}, {name: StatementDocument, minimumRows: 1}]}
+    parameters: {lobBytes: {type: integer, min: 1, max: 65536, default: 1024}}
+    requiresWritableDatabase: true
+    cleanup: isolated-copy
+    operations:
+      - {id: note-clob-update, handler: write_lob, table: CustomerNote, access: write, weight: 1, selection: {lobMode: clob}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}
+      - {id: statement-blob-update, handler: write_lob, table: StatementDocument, access: write, weight: 1, selection: {lobMode: blob}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}
+  - id: write-transaction-batch
+    version: 1
+    name: Transactional batch writes
+    kind: write
+    purpose: Atomic multi-row business operation
+    tables: [Account, CreditTransaction, AccountStatement]
+    coverage: {volume: [Medium, Large], shape: [Narrow, Standard], lob: [none], access: [append, update], transaction: [small-batch, multi-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: Account, minimumRows: 1}, {name: CreditTransaction, minimumRows: 1}, {name: AccountStatement, minimumRows: 1}]}
+    parameters: {batchSize: {type: integer, min: 2, max: 32, default: 4}}
+    requiresWritableDatabase: true
+    cleanup: isolated-copy
+    operations:
+      - {id: credit-business-transaction, handler: transaction_batch, tables: [Account, CreditTransaction, AccountStatement], access: write, weight: 1, selection: {keyDistribution: distributed}, transaction: {group: operation, commit: atomic}, payload: {provider: faker, identity: ordinal}}
+  - id: write-hot-key-contention
+    version: 1
+    name: Hot-key contention
+    kind: write
+    purpose: Concurrent updates to a small shared key set
+    tables: [Customer]
+    coverage: {volume: [Medium], shape: [Wide], lob: [none], access: [update], transaction: [single-row], pressure: [contention], key_distribution: [hot]}
+    prerequisites: {tables: [{name: Customer, minimumRows: 16}]}
+    parameters: {hotSetSize: {type: integer, min: 1, max: 1024, default: 16}}
+    requiresWritableDatabase: true
+    cleanup: isolated-copy
+    operations:
+      - {id: customer-hot-update, handler: update_wide, table: Customer, access: write, weight: 1, selection: {keyDistribution: hot, hotSetSize: 16}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}
+  - id: write-cold-distributed
+    version: 1
+    name: Cold distributed writes
+    kind: write
+    purpose: Concurrent updates distributed across independent keys
+    tables: [Customer]
+    coverage: {volume: [Medium], shape: [Wide], lob: [none], access: [update], transaction: [single-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: Customer, minimumRows: 1000}]}
+    parameters: {keyRange: {type: integer, min: 1000, default: 100000}}
+    requiresWritableDatabase: true
+    cleanup: isolated-copy
+    operations:
+      - {id: customer-cold-update, handler: update_wide, table: Customer, access: write, weight: 1, selection: {keyDistribution: distributed}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}
+  - id: mixed-balanced
+    version: 1
+    name: Balanced mixed load
+    kind: mixed
+    purpose: Comparable point-read and write traffic
+    tables: [Customer, Account]
+    coverage: {volume: [Medium], shape: [Standard, Wide], lob: [none], access: [point, update], transaction: [single-row], pressure: [parallel-distributed], key_distribution: [distributed]}
+    prerequisites: {tables: [{name: Customer, minimumRows: 1}, {name: Account, minimumRows: 1}]}
+    parameters: {readPercent: {type: integer, min: 0, max: 100, default: 50}}
+    requiresWritableDatabase: true
+    cleanup: isolated-copy
+    operations:
+      - {id: mixed-customer-read, handler: point_lookup, table: Customer, access: point, weight: 1, selection: {key: primary, source: BenchmarkTableInfo}, transaction: {group: operation, commit: none}, expected: {minimumRows: 0, maximumRows: 1}}
+      - {id: mixed-customer-update, handler: update_wide, table: Customer, access: write, weight: 1, selection: {keyDistribution: distributed}, transaction: {group: operation, commit: commit}, payload: {provider: faker, identity: ordinal}}

@@ -1,0 +1,366 @@
+ADD TABLE "LoaderRun"
+  AREA "PB_Ref_Data"
+  LABEL "Loader Run"
+  DESCRIPTION "Internal: one row per data-generation run (initial fill or growth step)"
+  DUMP-NAME "loaderrun"
+
+ADD FIELD "LoaderRunId" OF "LoaderRun" AS int64
+  DESCRIPTION "Run number 1, 2, ... in run order"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Loader Run Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Loader Run Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RunKind" OF "LoaderRun" AS character
+  DESCRIPTION "INITIAL or GROWTH"
+  FORMAT "x(8)"
+  INITIAL ""
+  LABEL "Run Kind"
+  POSITION 3
+  MAX-WIDTH 16
+  COLUMN-LABEL "Run Kind"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RunStatus" OF "LoaderRun" AS character
+  DESCRIPTION "PLANNED, RUNNING or COMPLETE"
+  FORMAT "x(10)"
+  INITIAL "PLANNED"
+  LABEL "Run Status"
+  POSITION 4
+  MAX-WIDTH 20
+  COLUMN-LABEL "Run Status"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "TargetScale" OF "LoaderRun" AS decimal
+  DESCRIPTION "Cumulative scale factor after this run"
+  FORMAT ">>9.999999"
+  INITIAL "0"
+  LABEL "Target Scale"
+  POSITION 5
+  MAX-WIDTH 17
+  COLUMN-LABEL "Target Scale"
+  DECIMALS 6
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "DeltaScale" OF "LoaderRun" AS decimal
+  DESCRIPTION "Scale factor added by this run"
+  FORMAT ">>9.999999"
+  INITIAL "0"
+  LABEL "Delta Scale"
+  POSITION 6
+  MAX-WIDTH 17
+  COLUMN-LABEL "Delta Scale"
+  DECIMALS 6
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "TargetDiskBytes" OF "LoaderRun" AS int64
+  DESCRIPTION "Requested cumulative on-disk size in bytes (0 if given as scale or customers)"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Target Disk Bytes"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Target Disk Bytes"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "RunSeed" OF "LoaderRun" AS int64
+  DESCRIPTION "Seed for this run"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Run Seed"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Run Seed"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "AsOfDate" OF "LoaderRun" AS date
+  DESCRIPTION "End of the 12-month history window (copied from run 1)"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "As Of Date"
+  POSITION 9
+  MAX-WIDTH 4
+  COLUMN-LABEL "As Of Date"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "GeneratorVersion" OF "LoaderRun" AS character
+  DESCRIPTION "pbgen version that planned the run"
+  FORMAT "x(20)"
+  INITIAL ""
+  LABEL "Generator Version"
+  POSITION 10
+  MAX-WIDTH 40
+  COLUMN-LABEL "Generator Version"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "FakerVersion" OF "LoaderRun" AS character
+  DESCRIPTION "Faker version that planned the run"
+  FORMAT "x(20)"
+  INITIAL ""
+  LABEL "Faker Version"
+  POSITION 11
+  MAX-WIDTH 40
+  COLUMN-LABEL "Faker Version"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "UnitCount" OF "LoaderRun" AS integer
+  DESCRIPTION "Units planned"
+  FORMAT ">>>>>>>9"
+  INITIAL "0"
+  LABEL "Unit Count"
+  POSITION 12
+  MAX-WIDTH 4
+  COLUMN-LABEL "Unit Count"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "UnitsDone" OF "LoaderRun" AS integer
+  DESCRIPTION "Length of the done-unit prefix applied to BenchmarkTableInfo"
+  FORMAT ">>>>>>>9"
+  INITIAL "0"
+  LABEL "Units Done"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Units Done"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "PlanSummary" OF "LoaderRun" AS clob
+  DESCRIPTION "JSON: per-table target rows and first/last IDs"
+  FORMAT "x(8)"
+  INITIAL ?
+  LABEL "Plan Summary"
+  POSITION 14
+  LOB-AREA "PB_Lob_Text"
+  LOB-BYTES 1048576
+  LOB-SIZE 1M
+  CLOB-CODEPAGE "UTF-8"
+  CLOB-COLLATION "BASIC"
+  CLOB-TYPE 1
+  COLUMN-LABEL "Plan Summary"
+  ORDER 130
+
+ADD FIELD "PlannedAt" OF "LoaderRun" AS datetime-tz
+  DESCRIPTION "When the run was planned"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Planned At"
+  POSITION 15
+  MAX-WIDTH 12
+  COLUMN-LABEL "Planned At"
+  ORDER 140
+
+ADD FIELD "CompletedAt" OF "LoaderRun" AS datetime-tz
+  DESCRIPTION "When the run completed"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Completed At"
+  POSITION 16
+  MAX-WIDTH 12
+  COLUMN-LABEL "Completed At"
+  ORDER 150
+
+ADD FIELD "MeasuredDiskBytes" OF "LoaderRun" AS int64
+  DESCRIPTION "Real size of the database extents at finalize"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Measured Disk Bytes"
+  POSITION 17
+  MAX-WIDTH 8
+  COLUMN-LABEL "Measured Disk Bytes"
+  ORDER 160
+  MANDATORY
+
+ADD INDEX "PkLoaderRun" ON "LoaderRun"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "LoaderRunId" ASCENDING
+
+ADD TABLE "LoaderUnit"
+  AREA "PB_Ref_Data"
+  LABEL "Loader Unit"
+  DESCRIPTION "Internal: one row per unit of generation work"
+  DUMP-NAME "loaderunit"
+
+ADD FIELD "LoaderRunId" OF "LoaderUnit" AS int64
+  DESCRIPTION "Run the unit belongs to"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Loader Run Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Loader Run Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "UnitNo" OF "LoaderUnit" AS integer
+  DESCRIPTION "1..UnitCount within the run, in ID order"
+  FORMAT ">>>>>>>9"
+  INITIAL "0"
+  LABEL "Unit No"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Unit No"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "Phase" OF "LoaderUnit" AS integer
+  DESCRIPTION "0 reference, 1 shared, 2 customers"
+  FORMAT "9"
+  INITIAL "0"
+  LABEL "Phase"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Phase"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "UnitKind" OF "LoaderUnit" AS character
+  DESCRIPTION "REFERENCE, EMPLOYEE, MERCHANT or CUSTOMER"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Unit Kind"
+  POSITION 5
+  MAX-WIDTH 20
+  COLUMN-LABEL "Unit Kind"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "UnitStatus" OF "LoaderUnit" AS character
+  DESCRIPTION "P pending, C claimed, D done"
+  FORMAT "x(1)"
+  INITIAL "P"
+  LABEL "Unit Status"
+  POSITION 6
+  MAX-WIDTH 2
+  COLUMN-LABEL "Unit Status"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "UnitSeed" OF "LoaderUnit" AS character
+  DESCRIPTION "Hex SHA-256 seed of the unit"
+  FORMAT "x(64)"
+  INITIAL ""
+  LABEL "Unit Seed"
+  POSITION 7
+  MAX-WIDTH 128
+  COLUMN-LABEL "Unit Seed"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "FirstIds" OF "LoaderUnit" AS character
+  DESCRIPTION "Table=firstId;... for every table the unit writes"
+  FORMAT "x(2000)"
+  INITIAL ""
+  LABEL "First Ids"
+  POSITION 8
+  MAX-WIDTH 4000
+  COLUMN-LABEL "First Ids"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "RowCounts" OF "LoaderUnit" AS character
+  DESCRIPTION "Table=count;... exact row counts"
+  FORMAT "x(2000)"
+  INITIAL ""
+  LABEL "Row Counts"
+  POSITION 9
+  MAX-WIDTH 4000
+  COLUMN-LABEL "Row Counts"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "TotalRows" OF "LoaderUnit" AS integer
+  DESCRIPTION "Sum of RowCounts"
+  FORMAT ">>>>>>>9"
+  INITIAL "0"
+  LABEL "Total Rows"
+  POSITION 10
+  MAX-WIDTH 4
+  COLUMN-LABEL "Total Rows"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "ClaimedBy" OF "LoaderUnit" AS character
+  DESCRIPTION "host:pid:worker:start-epoch of the claiming worker"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Claimed By"
+  POSITION 11
+  MAX-WIDTH 160
+  COLUMN-LABEL "Claimed By"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "ClaimedAt" OF "LoaderUnit" AS datetime-tz
+  DESCRIPTION "When the unit was claimed"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Claimed At"
+  POSITION 12
+  MAX-WIDTH 12
+  COLUMN-LABEL "Claimed At"
+  ORDER 110
+
+ADD FIELD "HeartbeatAt" OF "LoaderUnit" AS datetime-tz
+  DESCRIPTION "Last heartbeat of the claiming worker"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Heartbeat At"
+  POSITION 13
+  MAX-WIDTH 12
+  COLUMN-LABEL "Heartbeat At"
+  ORDER 120
+
+ADD FIELD "DoneAt" OF "LoaderUnit" AS datetime-tz
+  DESCRIPTION "When the unit was loaded"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Done At"
+  POSITION 14
+  MAX-WIDTH 12
+  COLUMN-LABEL "Done At"
+  ORDER 130
+
+ADD FIELD "Attempts" OF "LoaderUnit" AS integer
+  DESCRIPTION "Number of claims"
+  FORMAT ">>>>9"
+  INITIAL "0"
+  LABEL "Attempts"
+  POSITION 15
+  MAX-WIDTH 4
+  COLUMN-LABEL "Attempts"
+  ORDER 140
+  MANDATORY
+
+ADD INDEX "PkLoaderUnit" ON "LoaderUnit"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "LoaderRunId" ASCENDING
+  INDEX-FIELD "UnitNo" ASCENDING
+
+ADD INDEX "IxClaimable" ON "LoaderUnit"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "LoaderRunId" ASCENDING
+  INDEX-FIELD "Phase" ASCENDING
+  INDEX-FIELD "UnitStatus" ASCENDING
+  INDEX-FIELD "UnitNo" ASCENDING
+
+.
+PSC
+cpstream=UTF-8
+.
+0000008052

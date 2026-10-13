@@ -1,0 +1,6707 @@
+ADD SEQUENCE "SeqAccountTypeId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCurrencyId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqMerchantCategoryId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqTransactionTypeId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCountryId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqExchangeRateId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqBranchId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqMerchantId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqAccountId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCustomerId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqEmployeeId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqAccountHolderId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqAccountStatementId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCardId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCustomerAddressId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCustomerContactId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCustomerDocumentId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCustomerNoteId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqInterestRateHistoryId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqLoanId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqLoginEventId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqMonthlyBalanceId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqPayeeId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCreditTransactionId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqDebitTransactionId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqScheduledPaymentId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqStatementDocumentId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqCardAuthorizationId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqLoanPaymentId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqTransferId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqAuditLogId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD SEQUENCE "SeqBenchmarkTableInfoId"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+  MIN-VAL 1
+
+ADD TABLE "AccountType"
+  AREA "PB_Ref_Data"
+  LABEL "Account Type"
+  DESCRIPTION "Product definitions (checking, savings, CD…)"
+  DUMP-NAME "accounttype"
+
+ADD FIELD "AccountTypeId" OF "AccountType" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqAccountTypeId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Type Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Type Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "AccountType" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "AccountType" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "AccountType" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "AccountType" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountTypeCode" OF "AccountType" AS character
+  DESCRIPTION "e.g. CHKBASIC, SAVHIYLD, CD12M"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Account Type Code"
+  POSITION 7
+  MAX-WIDTH 20
+  COLUMN-LABEL "Account Type Code"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "AccountTypeName" OF "AccountType" AS character
+  DESCRIPTION "Product name"
+  FORMAT "x(50)"
+  INITIAL ""
+  LABEL "Account Type Name"
+  POSITION 8
+  MAX-WIDTH 100
+  COLUMN-LABEL "Account Type Name"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "Category" OF "AccountType" AS character
+  DESCRIPTION "CHECKING, SAVINGS, MONEYMARKET, CD"
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Category"
+  POSITION 9
+  MAX-WIDTH 24
+  COLUMN-LABEL "Category"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "Description" OF "AccountType" AS character
+  DESCRIPTION "Human-readable description"
+  FORMAT "x(200)"
+  INITIAL ""
+  LABEL "Description"
+  POSITION 10
+  MAX-WIDTH 400
+  COLUMN-LABEL "Description"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "TermsText" OF "AccountType" AS character
+  DESCRIPTION "Plain-text terms, 900–1,200 characters (makes the record Wide without a LOB)"
+  FORMAT "x(1200)"
+  INITIAL ""
+  LABEL "Terms Text"
+  POSITION 11
+  MAX-WIDTH 2400
+  COLUMN-LABEL "Terms Text"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "MinimumBalance" OF "AccountType" AS decimal
+  DESCRIPTION "Minimum balance"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Minimum Balance"
+  POSITION 12
+  MAX-WIDTH 17
+  COLUMN-LABEL "Minimum Balance"
+  DECIMALS 2
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "MonthlyFee" OF "AccountType" AS decimal
+  DESCRIPTION "Monthly maintenance fee"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Monthly Fee"
+  POSITION 13
+  MAX-WIDTH 17
+  COLUMN-LABEL "Monthly Fee"
+  DECIMALS 2
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "OverdraftAllowed" OF "AccountType" AS logical
+  DESCRIPTION "Whether overdraft is allowed"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Overdraft Allowed"
+  POSITION 14
+  MAX-WIDTH 1
+  COLUMN-LABEL "Overdraft Allowed"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "TermMonths" OF "AccountType" AS integer
+  DESCRIPTION "Term in months"
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Term Months"
+  POSITION 15
+  MAX-WIDTH 4
+  COLUMN-LABEL "Term Months"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "CurrentInterestRate" OF "AccountType" AS decimal
+  DESCRIPTION "Equals the latest InterestRateHistory row"
+  FORMAT ">>9.9999"
+  INITIAL "0"
+  LABEL "Current Interest Rate"
+  POSITION 16
+  MAX-WIDTH 17
+  COLUMN-LABEL "Current Interest Rate"
+  DECIMALS 4
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "IsActive" OF "AccountType" AS logical
+  DESCRIPTION "Whether the row is active"
+  FORMAT "yes/no"
+  INITIAL "yes"
+  LABEL "Is Active"
+  POSITION 17
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Active"
+  ORDER 160
+  MANDATORY
+
+ADD INDEX "PkAccountType" ON "AccountType"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "AccountTypeId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "AccountType"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "AccountTypeId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "AccountType"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "AccountTypeId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "AccountType"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "AccountTypeId" ASCENDING
+
+ADD INDEX "UxAccountTypeCode" ON "AccountType"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "AccountTypeCode" ASCENDING
+
+ADD INDEX "IxCategory" ON "AccountType"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "Category" ASCENDING
+
+ADD TABLE "Currency"
+  AREA "PB_Ref_Data"
+  LABEL "Currency"
+  DESCRIPTION "ISO currencies"
+  DUMP-NAME "currency"
+
+ADD FIELD "CurrencyId" OF "Currency" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCurrencyId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Currency Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Currency Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Currency" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Currency" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Currency" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Currency" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CurrencyCode" OF "Currency" AS character
+  DESCRIPTION "ISO currency code"
+  FORMAT "x(3)"
+  INITIAL ""
+  LABEL "Currency Code"
+  POSITION 7
+  MAX-WIDTH 6
+  COLUMN-LABEL "Currency Code"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "CurrencyName" OF "Currency" AS character
+  DESCRIPTION "Currency name"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "Currency Name"
+  POSITION 8
+  MAX-WIDTH 80
+  COLUMN-LABEL "Currency Name"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "NumericCode" OF "Currency" AS integer
+  DESCRIPTION "ISO numeric code"
+  FORMAT "999"
+  INITIAL "0"
+  LABEL "Numeric Code"
+  POSITION 9
+  MAX-WIDTH 4
+  COLUMN-LABEL "Numeric Code"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "MinorUnits" OF "Currency" AS integer
+  DESCRIPTION "Decimal places used by the currency"
+  FORMAT "9"
+  INITIAL "2"
+  LABEL "Minor Units"
+  POSITION 10
+  MAX-WIDTH 4
+  COLUMN-LABEL "Minor Units"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "CurrencySymbol" OF "Currency" AS character
+  DESCRIPTION "Currency symbol"
+  FORMAT "x(5)"
+  INITIAL ""
+  LABEL "Currency Symbol"
+  POSITION 11
+  MAX-WIDTH 10
+  COLUMN-LABEL "Currency Symbol"
+  ORDER 100
+
+ADD FIELD "IsActive" OF "Currency" AS logical
+  DESCRIPTION "Whether the row is active"
+  FORMAT "yes/no"
+  INITIAL "yes"
+  LABEL "Is Active"
+  POSITION 12
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Active"
+  ORDER 110
+  MANDATORY
+
+ADD INDEX "PkCurrency" ON "Currency"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CurrencyId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Currency"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CurrencyId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Currency"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CurrencyId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Currency"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CurrencyId" ASCENDING
+
+ADD INDEX "UxCurrencyCode" ON "Currency"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "CurrencyCode" ASCENDING
+
+ADD TABLE "MerchantCategory"
+  AREA "PB_Ref_Data"
+  LABEL "Merchant Category"
+  DESCRIPTION "Merchant category codes"
+  DUMP-NAME "merchantcategory"
+
+ADD FIELD "MerchantCategoryId" OF "MerchantCategory" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqMerchantCategoryId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Merchant Category Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Merchant Category Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "MerchantCategory" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "MerchantCategory" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "MerchantCategory" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "MerchantCategory" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "MccCode" OF "MerchantCategory" AS character
+  DESCRIPTION "Merchant category code"
+  FORMAT "x(4)"
+  INITIAL ""
+  LABEL "Mcc Code"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Mcc Code"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "Description" OF "MerchantCategory" AS character
+  DESCRIPTION "Human-readable description"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Description"
+  POSITION 8
+  MAX-WIDTH 160
+  COLUMN-LABEL "Description"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "CategoryGroup" OF "MerchantCategory" AS character
+  DESCRIPTION "Merchant category group"
+  FORMAT "x(30)"
+  INITIAL ""
+  LABEL "Category Group"
+  POSITION 9
+  MAX-WIDTH 60
+  COLUMN-LABEL "Category Group"
+  ORDER 80
+  MANDATORY
+
+ADD INDEX "PkMerchantCategory" ON "MerchantCategory"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "MerchantCategoryId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "MerchantCategory"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "MerchantCategoryId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "MerchantCategory"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "MerchantCategoryId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "MerchantCategory"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "MerchantCategoryId" ASCENDING
+
+ADD INDEX "UxMccCode" ON "MerchantCategory"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "MccCode" ASCENDING
+
+ADD TABLE "TransactionType"
+  AREA "PB_Ref_Data"
+  LABEL "Transaction Type"
+  DESCRIPTION "Codes for debit/credit kinds (ATM, POS, ACH, fee…)"
+  DUMP-NAME "transactiontype"
+
+ADD FIELD "TransactionTypeId" OF "TransactionType" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqTransactionTypeId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Transaction Type Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Transaction Type Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "TransactionType" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "TransactionType" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "TransactionType" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "TransactionType" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "TransactionTypeCode" OF "TransactionType" AS character
+  DESCRIPTION "e.g. POS, ATMWD, ACHCR, FEEMNT"
+  FORMAT "x(8)"
+  INITIAL ""
+  LABEL "Transaction Type Code"
+  POSITION 7
+  MAX-WIDTH 16
+  COLUMN-LABEL "Transaction Type Code"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "Description" OF "TransactionType" AS character
+  DESCRIPTION "Human-readable description"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Description"
+  POSITION 8
+  MAX-WIDTH 120
+  COLUMN-LABEL "Description"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "Direction" OF "TransactionType" AS character
+  DESCRIPTION "D debit, C credit"
+  FORMAT "x(1)"
+  INITIAL ""
+  LABEL "Direction"
+  POSITION 9
+  MAX-WIDTH 2
+  COLUMN-LABEL "Direction"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "Channel" OF "TransactionType" AS character
+  DESCRIPTION "ATM, POS, ACH, WIRE, BRANCH, ONLINE, INTERNAL"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Channel"
+  POSITION 10
+  MAX-WIDTH 20
+  COLUMN-LABEL "Channel"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "IsFee" OF "TransactionType" AS logical
+  DESCRIPTION "Whether this type is a fee"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Fee"
+  POSITION 11
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Fee"
+  ORDER 100
+  MANDATORY
+
+ADD INDEX "PkTransactionType" ON "TransactionType"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "TransactionTypeId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "TransactionType"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "TransactionTypeId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "TransactionType"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "TransactionTypeId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "TransactionType"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "TransactionTypeId" ASCENDING
+
+ADD INDEX "UxTransactionTypeCode" ON "TransactionType"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "TransactionTypeCode" ASCENDING
+
+ADD INDEX "IxDirectionChannel" ON "TransactionType"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "Direction" ASCENDING
+  INDEX-FIELD "Channel" ASCENDING
+
+ADD TABLE "Country"
+  AREA "PB_Ref_Data"
+  LABEL "Country"
+  DESCRIPTION "ISO countries with default currency"
+  DUMP-NAME "country"
+
+ADD FIELD "CountryId" OF "Country" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCountryId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Country Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Country Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Country" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Country" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Country" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Country" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CountryCode" OF "Country" AS character
+  DESCRIPTION "ISO country code"
+  FORMAT "x(2)"
+  INITIAL ""
+  LABEL "Country Code"
+  POSITION 7
+  MAX-WIDTH 4
+  COLUMN-LABEL "Country Code"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "CountryName" OF "Country" AS character
+  DESCRIPTION "Country name"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Country Name"
+  POSITION 8
+  MAX-WIDTH 120
+  COLUMN-LABEL "Country Name"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "DefaultCurrencyCode" OF "Country" AS character
+  DESCRIPTION "Reference to Currency"
+  FORMAT "x(3)"
+  INITIAL ""
+  LABEL "Default Currency Code"
+  POSITION 9
+  MAX-WIDTH 6
+  COLUMN-LABEL "Default Currency Code"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "PhonePrefix" OF "Country" AS character
+  DESCRIPTION "International dialling prefix"
+  FORMAT "x(6)"
+  INITIAL ""
+  LABEL "Phone Prefix"
+  POSITION 10
+  MAX-WIDTH 12
+  COLUMN-LABEL "Phone Prefix"
+  ORDER 90
+
+ADD INDEX "PkCountry" ON "Country"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CountryId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Country"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CountryId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Country"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CountryId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Country"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CountryId" ASCENDING
+
+ADD INDEX "UxCountryCode" ON "Country"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "CountryCode" ASCENDING
+
+ADD INDEX "IxDefaultCurrency" ON "Country"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "DefaultCurrencyCode" ASCENDING
+
+ADD TABLE "ExchangeRate"
+  AREA "PB_Ref_Data"
+  LABEL "Exchange Rate"
+  DESCRIPTION "Daily rate between two currencies"
+  DUMP-NAME "exchangerate"
+
+ADD FIELD "ExchangeRateId" OF "ExchangeRate" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqExchangeRateId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Exchange Rate Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Exchange Rate Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "ExchangeRate" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "ExchangeRate" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "ExchangeRate" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "ExchangeRate" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "RateDate" OF "ExchangeRate" AS date
+  DESCRIPTION "Date the rate applies to"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Rate Date"
+  POSITION 7
+  MAX-WIDTH 4
+  COLUMN-LABEL "Rate Date"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "FromCurrencyCode" OF "ExchangeRate" AS character
+  DESCRIPTION "Reference to Currency"
+  FORMAT "x(3)"
+  INITIAL ""
+  LABEL "From Currency Code"
+  POSITION 8
+  MAX-WIDTH 6
+  COLUMN-LABEL "From Currency Code"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "ToCurrencyCode" OF "ExchangeRate" AS character
+  DESCRIPTION "Reference to Currency"
+  FORMAT "x(3)"
+  INITIAL ""
+  LABEL "To Currency Code"
+  POSITION 9
+  MAX-WIDTH 6
+  COLUMN-LABEL "To Currency Code"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "Rate" OF "ExchangeRate" AS decimal
+  DESCRIPTION "Exchange rate"
+  FORMAT ">>>>>9.99999999"
+  INITIAL "0"
+  LABEL "Rate"
+  POSITION 10
+  MAX-WIDTH 17
+  COLUMN-LABEL "Rate"
+  DECIMALS 8
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "RateSource" OF "ExchangeRate" AS character
+  DESCRIPTION "Source of the rate"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Rate Source"
+  POSITION 11
+  MAX-WIDTH 20
+  COLUMN-LABEL "Rate Source"
+  ORDER 100
+  MANDATORY
+
+ADD INDEX "PkExchangeRate" ON "ExchangeRate"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "ExchangeRateId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "ExchangeRate"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "ExchangeRateId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "ExchangeRate"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "ExchangeRateId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "ExchangeRate"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "ExchangeRateId" ASCENDING
+
+ADD INDEX "UxCurrencyPairDate" ON "ExchangeRate"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "FromCurrencyCode" ASCENDING
+  INDEX-FIELD "ToCurrencyCode" ASCENDING
+  INDEX-FIELD "RateDate" DESCENDING
+
+ADD TABLE "Branch"
+  AREA "PB_Ref_Data"
+  LABEL "Branch"
+  DESCRIPTION "Physical bank branch"
+  DUMP-NAME "branch"
+
+ADD FIELD "BranchId" OF "Branch" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqBranchId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Branch Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Branch Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Branch" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Branch" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Branch" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Branch" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "BranchCode" OF "Branch" AS character
+  DESCRIPTION "Branch business key"
+  FORMAT "x(6)"
+  INITIAL ""
+  LABEL "Branch Code"
+  POSITION 7
+  MAX-WIDTH 12
+  COLUMN-LABEL "Branch Code"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "BranchName" OF "Branch" AS character
+  DESCRIPTION "Branch name"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Branch Name"
+  POSITION 8
+  MAX-WIDTH 120
+  COLUMN-LABEL "Branch Name"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "AddressLine1" OF "Branch" AS character
+  DESCRIPTION "First address line"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Address Line 1"
+  POSITION 9
+  MAX-WIDTH 120
+  COLUMN-LABEL "Address Line 1"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "City" OF "Branch" AS character
+  DESCRIPTION "City name"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "City"
+  POSITION 10
+  MAX-WIDTH 80
+  COLUMN-LABEL "City"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "StateProvince" OF "Branch" AS character
+  DESCRIPTION "State or province"
+  FORMAT "x(30)"
+  INITIAL ""
+  LABEL "State Province"
+  POSITION 11
+  MAX-WIDTH 60
+  COLUMN-LABEL "State Province"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "PostalCode" OF "Branch" AS character
+  DESCRIPTION "Postal / ZIP code"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Postal Code"
+  POSITION 12
+  MAX-WIDTH 20
+  COLUMN-LABEL "Postal Code"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "CountryCode" OF "Branch" AS character
+  DESCRIPTION "ISO country code"
+  FORMAT "x(2)"
+  INITIAL ""
+  LABEL "Country Code"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Country Code"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "Phone" OF "Branch" AS character
+  DESCRIPTION "Telephone number"
+  FORMAT "x(20)"
+  INITIAL ""
+  LABEL "Phone"
+  POSITION 14
+  MAX-WIDTH 40
+  COLUMN-LABEL "Phone"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "OpenDate" OF "Branch" AS date
+  DESCRIPTION "Date opened"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Open Date"
+  POSITION 15
+  MAX-WIDTH 4
+  COLUMN-LABEL "Open Date"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "IsActive" OF "Branch" AS logical
+  DESCRIPTION "Whether the row is active"
+  FORMAT "yes/no"
+  INITIAL "yes"
+  LABEL "Is Active"
+  POSITION 16
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Active"
+  ORDER 150
+  MANDATORY
+
+ADD INDEX "PkBranch" ON "Branch"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "BranchId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Branch"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "BranchId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Branch"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "BranchId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Branch"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "BranchId" ASCENDING
+
+ADD INDEX "UxBranchCode" ON "Branch"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "BranchCode" ASCENDING
+
+ADD INDEX "IxCountryCity" ON "Branch"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "CountryCode" ASCENDING
+  INDEX-FIELD "City" ASCENDING
+
+ADD TABLE "Merchant"
+  AREA "PB_Ref_Data"
+  LABEL "Merchant"
+  DESCRIPTION "Businesses where cards are used"
+  DUMP-NAME "merchant"
+
+ADD FIELD "MerchantId" OF "Merchant" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqMerchantId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Merchant Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Merchant Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Merchant" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Merchant" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Merchant" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Merchant" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "MerchantNumber" OF "Merchant" AS character
+  DESCRIPTION "Merchant business key"
+  FORMAT "x(15)"
+  INITIAL ""
+  LABEL "Merchant Number"
+  POSITION 7
+  MAX-WIDTH 30
+  COLUMN-LABEL "Merchant Number"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "MerchantName" OF "Merchant" AS character
+  DESCRIPTION "Merchant trading name"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Merchant Name"
+  POSITION 8
+  MAX-WIDTH 160
+  COLUMN-LABEL "Merchant Name"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "MerchantCategoryId" OF "Merchant" AS int64
+  DESCRIPTION "Reference to MerchantCategory"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Merchant Category Id"
+  POSITION 9
+  MAX-WIDTH 8
+  COLUMN-LABEL "Merchant Category Id"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "City" OF "Merchant" AS character
+  DESCRIPTION "City name"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "City"
+  POSITION 10
+  MAX-WIDTH 80
+  COLUMN-LABEL "City"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "StateProvince" OF "Merchant" AS character
+  DESCRIPTION "State or province"
+  FORMAT "x(30)"
+  INITIAL ""
+  LABEL "State Province"
+  POSITION 11
+  MAX-WIDTH 60
+  COLUMN-LABEL "State Province"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "PostalCode" OF "Merchant" AS character
+  DESCRIPTION "Postal / ZIP code"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Postal Code"
+  POSITION 12
+  MAX-WIDTH 20
+  COLUMN-LABEL "Postal Code"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "CountryCode" OF "Merchant" AS character
+  DESCRIPTION "ISO country code"
+  FORMAT "x(2)"
+  INITIAL ""
+  LABEL "Country Code"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Country Code"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "Latitude" OF "Merchant" AS decimal
+  DESCRIPTION "Latitude (WGS84)"
+  FORMAT "->>9.999999"
+  INITIAL "0"
+  LABEL "Latitude"
+  POSITION 14
+  MAX-WIDTH 17
+  COLUMN-LABEL "Latitude"
+  DECIMALS 6
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "Longitude" OF "Merchant" AS decimal
+  DESCRIPTION "Longitude (WGS84)"
+  FORMAT "->>9.999999"
+  INITIAL "0"
+  LABEL "Longitude"
+  POSITION 15
+  MAX-WIDTH 17
+  COLUMN-LABEL "Longitude"
+  DECIMALS 6
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "IsOnline" OF "Merchant" AS logical
+  DESCRIPTION "Online-only merchant"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Online"
+  POSITION 16
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Online"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "RiskScore" OF "Merchant" AS integer
+  DESCRIPTION "Merchant risk score"
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Risk Score"
+  POSITION 17
+  MAX-WIDTH 4
+  COLUMN-LABEL "Risk Score"
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "UpdatedAt" OF "Merchant" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 18
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 170
+  MANDATORY
+
+ADD INDEX "PkMerchant" ON "Merchant"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "MerchantId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Merchant"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "MerchantId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Merchant"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "MerchantId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Merchant"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "MerchantId" ASCENDING
+
+ADD INDEX "UxMerchantNumber" ON "Merchant"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "MerchantNumber" ASCENDING
+
+ADD INDEX "IxCategory" ON "Merchant"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "MerchantCategoryId" ASCENDING
+
+ADD INDEX "IxCountryCity" ON "Merchant"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "CountryCode" ASCENDING
+  INDEX-FIELD "City" ASCENDING
+
+ADD INDEX "WxMerchantName" ON "Merchant"
+  AREA "PB_Ref_Idx"
+  WORD
+  INDEX-FIELD "MerchantName" ASCENDING
+
+ADD TABLE "Account"
+  AREA "PB_Master_Std"
+  LABEL "Account"
+  DESCRIPTION "A deposit account"
+  DUMP-NAME "account"
+
+ADD FIELD "AccountId" OF "Account" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqAccountId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Account" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Account" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Account" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Account" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountNumber" OF "Account" AS character
+  DESCRIPTION "12 random digits + 2 check digits"
+  FORMAT "x(14)"
+  INITIAL ""
+  LABEL "Account Number"
+  POSITION 7
+  MAX-WIDTH 28
+  COLUMN-LABEL "Account Number"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "AccountTypeId" OF "Account" AS int64
+  DESCRIPTION "Reference to AccountType"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Type Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Type Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "BranchId" OF "Account" AS int64
+  DESCRIPTION "Reference to Branch"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Branch Id"
+  POSITION 9
+  MAX-WIDTH 8
+  COLUMN-LABEL "Branch Id"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "CurrencyCode" OF "Account" AS character
+  DESCRIPTION "ISO currency code"
+  FORMAT "x(3)"
+  INITIAL "USD"
+  LABEL "Currency Code"
+  POSITION 10
+  MAX-WIDTH 6
+  COLUMN-LABEL "Currency Code"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "AccountStatus" OF "Account" AS character
+  DESCRIPTION "Lifecycle status"
+  FORMAT "x(8)"
+  INITIAL "OPEN"
+  LABEL "Account Status"
+  POSITION 11
+  MAX-WIDTH 16
+  COLUMN-LABEL "Account Status"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "OpenDate" OF "Account" AS date
+  DESCRIPTION "Date opened"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Open Date"
+  POSITION 12
+  MAX-WIDTH 4
+  COLUMN-LABEL "Open Date"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "CloseDate" OF "Account" AS date
+  DESCRIPTION "Date closed"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Close Date"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Close Date"
+  ORDER 120
+
+ADD FIELD "CurrentBalance" OF "Account" AS decimal
+  DESCRIPTION "Equals the last transaction's RunningBalance"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Current Balance"
+  POSITION 14
+  MAX-WIDTH 17
+  COLUMN-LABEL "Current Balance"
+  DECIMALS 2
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "AvailableBalance" OF "Account" AS decimal
+  DESCRIPTION "Balance available for withdrawal"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Available Balance"
+  POSITION 15
+  MAX-WIDTH 17
+  COLUMN-LABEL "Available Balance"
+  DECIMALS 2
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "OverdraftLimit" OF "Account" AS decimal
+  DESCRIPTION "Approved overdraft limit"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Overdraft Limit"
+  POSITION 16
+  MAX-WIDTH 17
+  COLUMN-LABEL "Overdraft Limit"
+  DECIMALS 2
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "InterestRate" OF "Account" AS decimal
+  DESCRIPTION "Annual interest rate (%)"
+  FORMAT ">>9.9999"
+  INITIAL "0"
+  LABEL "Interest Rate"
+  POSITION 17
+  MAX-WIDTH 17
+  COLUMN-LABEL "Interest Rate"
+  DECIMALS 4
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "Nickname" OF "Account" AS character
+  DESCRIPTION "Customer-chosen account nickname"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "Nickname"
+  POSITION 18
+  MAX-WIDTH 80
+  COLUMN-LABEL "Nickname"
+  ORDER 170
+  MANDATORY
+
+ADD FIELD "LastStatementDate" OF "Account" AS date
+  DESCRIPTION "Period end of the most recent statement"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Last Statement Date"
+  POSITION 19
+  MAX-WIDTH 4
+  COLUMN-LABEL "Last Statement Date"
+  ORDER 180
+
+ADD FIELD "LastActivityAt" OF "Account" AS datetime-tz
+  DESCRIPTION "Time of the most recent transaction"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Last Activity At"
+  POSITION 20
+  MAX-WIDTH 12
+  COLUMN-LABEL "Last Activity At"
+  ORDER 190
+
+ADD FIELD "UpdatedAt" OF "Account" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 21
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 200
+  MANDATORY
+
+ADD INDEX "PkAccount" ON "Account"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "AccountId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Account"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "AccountId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Account"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "AccountId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Account"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "AccountId" ASCENDING
+
+ADD INDEX "UxAccountNumber" ON "Account"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  INDEX-FIELD "AccountNumber" ASCENDING
+
+ADD INDEX "IxAccountType" ON "Account"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "AccountTypeId" ASCENDING
+
+ADD INDEX "IxBranchStatus" ON "Account"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "BranchId" ASCENDING
+  INDEX-FIELD "AccountStatus" ASCENDING
+
+ADD INDEX "IxCurrency" ON "Account"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CurrencyCode" ASCENDING
+
+ADD TABLE "Customer"
+  AREA "PB_Master_Wide"
+  LABEL "Customer"
+  DESCRIPTION "Individual or business bank customer"
+  DUMP-NAME "customer"
+
+ADD FIELD "CustomerId" OF "Customer" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCustomerId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Customer" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Customer" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Customer" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Customer" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CustomerNumber" OF "Customer" AS character
+  DESCRIPTION "C + 10 digits (random, unique; not the ID)"
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Customer Number"
+  POSITION 7
+  MAX-WIDTH 24
+  COLUMN-LABEL "Customer Number"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "CustomerKind" OF "Customer" AS character
+  DESCRIPTION "I individual 92%, B business 8%"
+  FORMAT "x(1)"
+  INITIAL ""
+  LABEL "Customer Kind"
+  POSITION 8
+  MAX-WIDTH 2
+  COLUMN-LABEL "Customer Kind"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "FirstName" OF "Customer" AS character
+  DESCRIPTION "Given name"
+  FORMAT "x(30)"
+  INITIAL ""
+  LABEL "First Name"
+  POSITION 9
+  MAX-WIDTH 60
+  COLUMN-LABEL "First Name"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "MiddleName" OF "Customer" AS character
+  DESCRIPTION "Middle name"
+  FORMAT "x(30)"
+  INITIAL ""
+  LABEL "Middle Name"
+  POSITION 10
+  MAX-WIDTH 60
+  COLUMN-LABEL "Middle Name"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "LastName" OF "Customer" AS character
+  DESCRIPTION "Family name"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "Last Name"
+  POSITION 11
+  MAX-WIDTH 80
+  COLUMN-LABEL "Last Name"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "BusinessName" OF "Customer" AS character
+  DESCRIPTION "Registered business name"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Business Name"
+  POSITION 12
+  MAX-WIDTH 160
+  COLUMN-LABEL "Business Name"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "DateOfBirth" OF "Customer" AS date
+  DESCRIPTION "Date of birth"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Date Of Birth"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Date Of Birth"
+  ORDER 120
+
+ADD FIELD "TaxIdMasked" OF "Customer" AS character
+  DESCRIPTION "Masked tax identifier"
+  FORMAT "x(11)"
+  INITIAL ""
+  LABEL "Tax Id Masked"
+  POSITION 14
+  MAX-WIDTH 22
+  COLUMN-LABEL "Tax Id Masked"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "Email" OF "Customer" AS character
+  DESCRIPTION "Email address"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Email"
+  POSITION 15
+  MAX-WIDTH 160
+  COLUMN-LABEL "Email"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "PreferredLanguage" OF "Customer" AS character
+  DESCRIPTION "en 85%, es 12%, other 3%"
+  FORMAT "x(5)"
+  INITIAL "en"
+  LABEL "Preferred Language"
+  POSITION 16
+  MAX-WIDTH 10
+  COLUMN-LABEL "Preferred Language"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "HomeBranchId" OF "Customer" AS int64
+  DESCRIPTION "Reference to Branch"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Home Branch Id"
+  POSITION 17
+  MAX-WIDTH 8
+  COLUMN-LABEL "Home Branch Id"
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "Segment" OF "Customer" AS character
+  DESCRIPTION "RETAIL 80%, PREMIER 12%, PRIVATE 2%, SMB 6%"
+  FORMAT "x(10)"
+  INITIAL "RETAIL"
+  LABEL "Segment"
+  POSITION 18
+  MAX-WIDTH 20
+  COLUMN-LABEL "Segment"
+  ORDER 170
+  MANDATORY
+
+ADD FIELD "CreditScore" OF "Customer" AS integer
+  DESCRIPTION "300–850, normal around 700"
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Credit Score"
+  POSITION 19
+  MAX-WIDTH 4
+  COLUMN-LABEL "Credit Score"
+  ORDER 180
+  MANDATORY
+
+ADD FIELD "AnnualIncome" OF "Customer" AS decimal
+  DESCRIPTION "Reported annual income"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Annual Income"
+  POSITION 20
+  MAX-WIDTH 17
+  COLUMN-LABEL "Annual Income"
+  DECIMALS 2
+  ORDER 190
+  MANDATORY
+
+ADD FIELD "CustomerSince" OF "Customer" AS date
+  DESCRIPTION "Date the customer relationship began"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Customer Since"
+  POSITION 21
+  MAX-WIDTH 4
+  COLUMN-LABEL "Customer Since"
+  ORDER 200
+  MANDATORY
+
+ADD FIELD "CustomerStatus" OF "Customer" AS character
+  DESCRIPTION "Lifecycle status"
+  FORMAT "x(10)"
+  INITIAL "ACTIVE"
+  LABEL "Customer Status"
+  POSITION 22
+  MAX-WIDTH 20
+  COLUMN-LABEL "Customer Status"
+  ORDER 210
+  MANDATORY
+
+ADD FIELD "IsPaperless" OF "Customer" AS logical
+  DESCRIPTION "Receives statements electronically"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Paperless"
+  POSITION 23
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Paperless"
+  ORDER 220
+  MANDATORY
+
+ADD FIELD "MarketingOptIn" OF "Customer" AS logical
+  DESCRIPTION "Consented to marketing"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Marketing Opt In"
+  POSITION 24
+  MAX-WIDTH 1
+  COLUMN-LABEL "Marketing Opt In"
+  ORDER 230
+  MANDATORY
+
+ADD FIELD "KycVerifiedAt" OF "Customer" AS datetime-tz
+  DESCRIPTION "When identity (KYC) was verified"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Kyc Verified At"
+  POSITION 25
+  MAX-WIDTH 12
+  COLUMN-LABEL "Kyc Verified At"
+  ORDER 240
+
+ADD FIELD "RiskRating" OF "Customer" AS character
+  DESCRIPTION "AML risk rating"
+  FORMAT "x(1)"
+  INITIAL "L"
+  LABEL "Risk Rating"
+  POSITION 26
+  MAX-WIDTH 2
+  COLUMN-LABEL "Risk Rating"
+  ORDER 250
+  MANDATORY
+
+ADD FIELD "Occupation" OF "Customer" AS character
+  DESCRIPTION "Customer occupation"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "Occupation"
+  POSITION 27
+  MAX-WIDTH 80
+  COLUMN-LABEL "Occupation"
+  ORDER 260
+  MANDATORY
+
+ADD FIELD "EmployerName" OF "Customer" AS character
+  DESCRIPTION "Customer employer"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Employer Name"
+  POSITION 28
+  MAX-WIDTH 120
+  COLUMN-LABEL "Employer Name"
+  ORDER 270
+  MANDATORY
+
+ADD FIELD "SecurityQuestion" OF "Customer" AS character
+  DESCRIPTION "One of 10 questions"
+  FORMAT "x(100)"
+  INITIAL ""
+  LABEL "Security Question"
+  POSITION 29
+  MAX-WIDTH 200
+  COLUMN-LABEL "Security Question"
+  ORDER 280
+  MANDATORY
+
+ADD FIELD "Preferences" OF "Customer" AS character
+  DESCRIPTION "key=value; list, 150–300 characters (width filler)"
+  FORMAT "x(300)"
+  INITIAL ""
+  LABEL "Preferences"
+  POSITION 30
+  MAX-WIDTH 600
+  COLUMN-LABEL "Preferences"
+  ORDER 290
+  MANDATORY
+
+ADD FIELD "LastContactDate" OF "Customer" AS date
+  DESCRIPTION "Date of the last contact with the customer"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Last Contact Date"
+  POSITION 31
+  MAX-WIDTH 4
+  COLUMN-LABEL "Last Contact Date"
+  ORDER 300
+
+ADD FIELD "UpdatedAt" OF "Customer" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 32
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 310
+  MANDATORY
+
+ADD INDEX "PkCustomer" ON "Customer"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CustomerId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Customer"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CustomerId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Customer"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CustomerId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Customer"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CustomerId" ASCENDING
+
+ADD INDEX "UxCustomerNumber" ON "Customer"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  INDEX-FIELD "CustomerNumber" ASCENDING
+
+ADD INDEX "IxName" ON "Customer"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "LastName" ASCENDING
+  INDEX-FIELD "FirstName" ASCENDING
+
+ADD INDEX "IxHomeBranch" ON "Customer"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "HomeBranchId" ASCENDING
+
+ADD INDEX "IxStatusSegment" ON "Customer"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerStatus" ASCENDING
+  INDEX-FIELD "Segment" ASCENDING
+
+ADD INDEX "IxEmail" ON "Customer"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "Email" ASCENDING
+
+ADD TABLE "Employee"
+  AREA "PB_Ref_Data"
+  LABEL "Employee"
+  DESCRIPTION "Bank staff"
+  DUMP-NAME "employee"
+
+ADD FIELD "EmployeeId" OF "Employee" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqEmployeeId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Employee Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Employee Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Employee" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Employee" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Employee" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Employee" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "EmployeeNumber" OF "Employee" AS character
+  DESCRIPTION "Employee business key"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Employee Number"
+  POSITION 7
+  MAX-WIDTH 20
+  COLUMN-LABEL "Employee Number"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "BranchId" OF "Employee" AS int64
+  DESCRIPTION "Reference to Branch"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Branch Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Branch Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "FirstName" OF "Employee" AS character
+  DESCRIPTION "Given name"
+  FORMAT "x(30)"
+  INITIAL ""
+  LABEL "First Name"
+  POSITION 9
+  MAX-WIDTH 60
+  COLUMN-LABEL "First Name"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "LastName" OF "Employee" AS character
+  DESCRIPTION "Family name"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "Last Name"
+  POSITION 10
+  MAX-WIDTH 80
+  COLUMN-LABEL "Last Name"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "JobTitle" OF "Employee" AS character
+  DESCRIPTION "Job title"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "Job Title"
+  POSITION 11
+  MAX-WIDTH 80
+  COLUMN-LABEL "Job Title"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "Email" OF "Employee" AS character
+  DESCRIPTION "Email address"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Email"
+  POSITION 12
+  MAX-WIDTH 160
+  COLUMN-LABEL "Email"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "HireDate" OF "Employee" AS date
+  DESCRIPTION "Date the employee was hired"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Hire Date"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Hire Date"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "TerminationDate" OF "Employee" AS date
+  DESCRIPTION "Date employment ended"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Termination Date"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Termination Date"
+  ORDER 130
+
+ADD FIELD "IsBranchManager" OF "Employee" AS logical
+  DESCRIPTION "Whether the employee manages their branch"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Branch Manager"
+  POSITION 15
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Branch Manager"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "Salary" OF "Employee" AS decimal
+  DESCRIPTION "Annual salary"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Salary"
+  POSITION 16
+  MAX-WIDTH 17
+  COLUMN-LABEL "Salary"
+  DECIMALS 2
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "Photo" OF "Employee" AS blob
+  DESCRIPTION "JPEG, 8–48 KB (avg 24 KB); present on 80% of rows. Area PB_Lob_Doc"
+  FORMAT "x(8)"
+  INITIAL ?
+  LABEL "Photo"
+  POSITION 17
+  LOB-AREA "PB_Lob_Doc"
+  LOB-BYTES 65536
+  LOB-SIZE 64K
+  COLUMN-LABEL "Photo"
+  ORDER 160
+
+ADD FIELD "UpdatedAt" OF "Employee" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 18
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 170
+  MANDATORY
+
+ADD INDEX "PkEmployee" ON "Employee"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "EmployeeId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Employee"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "EmployeeId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Employee"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "EmployeeId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Employee"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "EmployeeId" ASCENDING
+
+ADD INDEX "UxEmployeeNumber" ON "Employee"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "EmployeeNumber" ASCENDING
+
+ADD INDEX "IxBranch" ON "Employee"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "BranchId" ASCENDING
+  INDEX-FIELD "LastName" ASCENDING
+
+ADD INDEX "IxName" ON "Employee"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "LastName" ASCENDING
+  INDEX-FIELD "FirstName" ASCENDING
+
+ADD TABLE "AccountHolder"
+  AREA "PB_Master_Narrow"
+  LABEL "Account Holder"
+  DESCRIPTION "Customer-to-account ownership with role (primary, joint, authorized)"
+  DUMP-NAME "accountholder"
+
+ADD FIELD "AccountHolderId" OF "AccountHolder" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqAccountHolderId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Holder Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Holder Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "AccountHolder" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "AccountHolder" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "AccountHolder" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "AccountHolder" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountId" OF "AccountHolder" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "AccountHolder" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "HolderRole" OF "AccountHolder" AS character
+  DESCRIPTION "Role of the holder on the account"
+  FORMAT "x(10)"
+  INITIAL "PRIMARY"
+  LABEL "Holder Role"
+  POSITION 9
+  MAX-WIDTH 20
+  COLUMN-LABEL "Holder Role"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "OwnershipPercent" OF "AccountHolder" AS decimal
+  DESCRIPTION "Ownership share (%)"
+  FORMAT ">>9.99"
+  INITIAL "0"
+  LABEL "Ownership Percent"
+  POSITION 10
+  MAX-WIDTH 17
+  COLUMN-LABEL "Ownership Percent"
+  DECIMALS 2
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "AddedDate" OF "AccountHolder" AS date
+  DESCRIPTION "Date the holder was added to the account"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Added Date"
+  POSITION 11
+  MAX-WIDTH 4
+  COLUMN-LABEL "Added Date"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "UpdatedAt" OF "AccountHolder" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 12
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 110
+  MANDATORY
+
+ADD INDEX "PkAccountHolder" ON "AccountHolder"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "AccountHolderId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "AccountHolder"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "AccountHolderId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "AccountHolder"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "AccountHolderId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "AccountHolder"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "AccountHolderId" ASCENDING
+
+ADD INDEX "UxAccountCustomer" ON "AccountHolder"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  INDEX-FIELD "AccountId" ASCENDING
+  INDEX-FIELD "CustomerId" ASCENDING
+
+ADD INDEX "IxCustomerAccount" ON "AccountHolder"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+  INDEX-FIELD "AccountId" ASCENDING
+
+ADD TABLE "AccountStatement"
+  AREA "PB_Txn_Large"
+  LABEL "Account Statement"
+  DESCRIPTION "Periodic account statement summary"
+  DUMP-NAME "accountstatement"
+
+ADD FIELD "AccountStatementId" OF "AccountStatement" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqAccountStatementId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Statement Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Statement Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "AccountStatement" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "AccountStatement" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "AccountStatement" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "AccountStatement" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountId" OF "AccountStatement" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "PeriodStart" OF "AccountStatement" AS date
+  DESCRIPTION "First day of the statement period"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Period Start"
+  POSITION 8
+  MAX-WIDTH 4
+  COLUMN-LABEL "Period Start"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "PeriodEnd" OF "AccountStatement" AS date
+  DESCRIPTION "Last day of the statement period"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Period End"
+  POSITION 9
+  MAX-WIDTH 4
+  COLUMN-LABEL "Period End"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "OpeningBalance" OF "AccountStatement" AS decimal
+  DESCRIPTION "Balance at period start"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Opening Balance"
+  POSITION 10
+  MAX-WIDTH 17
+  COLUMN-LABEL "Opening Balance"
+  DECIMALS 2
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "ClosingBalance" OF "AccountStatement" AS decimal
+  DESCRIPTION "Balance at period end"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Closing Balance"
+  POSITION 11
+  MAX-WIDTH 17
+  COLUMN-LABEL "Closing Balance"
+  DECIMALS 2
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "TotalDebits" OF "AccountStatement" AS decimal
+  DESCRIPTION "Sum of debit amounts in the period"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Total Debits"
+  POSITION 12
+  MAX-WIDTH 17
+  COLUMN-LABEL "Total Debits"
+  DECIMALS 2
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "TotalCredits" OF "AccountStatement" AS decimal
+  DESCRIPTION "Sum of credit amounts in the period"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Total Credits"
+  POSITION 13
+  MAX-WIDTH 17
+  COLUMN-LABEL "Total Credits"
+  DECIMALS 2
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "DebitCount" OF "AccountStatement" AS integer
+  DESCRIPTION "Number of debits in the period"
+  FORMAT ">>>>9"
+  INITIAL "0"
+  LABEL "Debit Count"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Debit Count"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "CreditCount" OF "AccountStatement" AS integer
+  DESCRIPTION "Number of credits in the period"
+  FORMAT ">>>>9"
+  INITIAL "0"
+  LABEL "Credit Count"
+  POSITION 15
+  MAX-WIDTH 4
+  COLUMN-LABEL "Credit Count"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "InterestEarned" OF "AccountStatement" AS decimal
+  DESCRIPTION "Interest credited in the period"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Interest Earned"
+  POSITION 16
+  MAX-WIDTH 17
+  COLUMN-LABEL "Interest Earned"
+  DECIMALS 2
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "FeesCharged" OF "AccountStatement" AS decimal
+  DESCRIPTION "Fees charged in the period"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Fees Charged"
+  POSITION 17
+  MAX-WIDTH 17
+  COLUMN-LABEL "Fees Charged"
+  DECIMALS 2
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "DeliveryMethod" OF "AccountStatement" AS character
+  DESCRIPTION "How the statement is delivered"
+  FORMAT "x(6)"
+  INITIAL "PAPER"
+  LABEL "Delivery Method"
+  POSITION 18
+  MAX-WIDTH 12
+  COLUMN-LABEL "Delivery Method"
+  ORDER 170
+  MANDATORY
+
+ADD FIELD "GeneratedAt" OF "AccountStatement" AS datetime-tz
+  DESCRIPTION "When the statement was generated"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Generated At"
+  POSITION 19
+  MAX-WIDTH 12
+  COLUMN-LABEL "Generated At"
+  ORDER 180
+  MANDATORY
+
+ADD FIELD "NoticeText" OF "AccountStatement" AS clob
+  DESCRIPTION "Regulatory/marketing notice; present on 1%; 0.5–4 KB (avg 1.5 KB). Area PB_Lob_Text"
+  FORMAT "x(8)"
+  INITIAL ?
+  LABEL "Notice Text"
+  POSITION 20
+  LOB-AREA "PB_Lob_Text"
+  LOB-BYTES 4096
+  LOB-SIZE 4K
+  CLOB-CODEPAGE "UTF-8"
+  CLOB-COLLATION "BASIC"
+  CLOB-TYPE 1
+  COLUMN-LABEL "Notice Text"
+  ORDER 190
+
+ADD INDEX "PkAccountStatement" ON "AccountStatement"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "AccountStatementId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "AccountStatement"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "AccountStatementId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "AccountStatement"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "AccountStatementId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "AccountStatement"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "AccountStatementId" ASCENDING
+
+ADD INDEX "UxAccountPeriod" ON "AccountStatement"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  INDEX-FIELD "AccountId" ASCENDING
+  INDEX-FIELD "PeriodEnd" DESCENDING
+
+ADD INDEX "IxPeriodEnd" ON "AccountStatement"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "PeriodEnd" ASCENDING
+
+ADD TABLE "Card"
+  AREA "PB_Master_Std"
+  LABEL "Card"
+  DESCRIPTION "Debit/credit cards"
+  DUMP-NAME "card"
+
+ADD FIELD "CardId" OF "Card" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCardId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Card Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Card Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Card" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Card" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Card" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Card" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CardToken" OF "Card" AS character
+  DESCRIPTION "Random 32-character hex; unique"
+  FORMAT "x(32)"
+  INITIAL ""
+  LABEL "Card Token"
+  POSITION 7
+  MAX-WIDTH 64
+  COLUMN-LABEL "Card Token"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "CardNumberMasked" OF "Card" AS character
+  DESCRIPTION "Masked card number"
+  FORMAT "x(19)"
+  INITIAL ""
+  LABEL "Card Number Masked"
+  POSITION 8
+  MAX-WIDTH 38
+  COLUMN-LABEL "Card Number Masked"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "AccountId" OF "Card" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Id"
+  POSITION 9
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Id"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "Card" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 10
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "CardKind" OF "Card" AS character
+  DESCRIPTION "Kind of card"
+  FORMAT "x(8)"
+  INITIAL "DEBIT"
+  LABEL "Card Kind"
+  POSITION 11
+  MAX-WIDTH 16
+  COLUMN-LABEL "Card Kind"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "Network" OF "Card" AS character
+  DESCRIPTION "Card network"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Network"
+  POSITION 12
+  MAX-WIDTH 20
+  COLUMN-LABEL "Network"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "EmbossedName" OF "Card" AS character
+  DESCRIPTION "Name printed on the card"
+  FORMAT "x(26)"
+  INITIAL ""
+  LABEL "Embossed Name"
+  POSITION 13
+  MAX-WIDTH 52
+  COLUMN-LABEL "Embossed Name"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "ExpiryMonth" OF "Card" AS integer
+  DESCRIPTION "Card expiry month"
+  FORMAT "99"
+  INITIAL "0"
+  LABEL "Expiry Month"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Expiry Month"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "ExpiryYear" OF "Card" AS integer
+  DESCRIPTION "Card expiry year"
+  FORMAT "9999"
+  INITIAL "0"
+  LABEL "Expiry Year"
+  POSITION 15
+  MAX-WIDTH 4
+  COLUMN-LABEL "Expiry Year"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "IssueDate" OF "Card" AS date
+  DESCRIPTION "Date issued"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Issue Date"
+  POSITION 16
+  MAX-WIDTH 4
+  COLUMN-LABEL "Issue Date"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "CardStatus" OF "Card" AS character
+  DESCRIPTION "Lifecycle status"
+  FORMAT "x(10)"
+  INITIAL "ACTIVE"
+  LABEL "Card Status"
+  POSITION 17
+  MAX-WIDTH 20
+  COLUMN-LABEL "Card Status"
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "DailyLimit" OF "Card" AS decimal
+  DESCRIPTION "Daily spending limit"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Daily Limit"
+  POSITION 18
+  MAX-WIDTH 17
+  COLUMN-LABEL "Daily Limit"
+  DECIMALS 2
+  ORDER 170
+  MANDATORY
+
+ADD FIELD "IsContactless" OF "Card" AS logical
+  DESCRIPTION "Whether the card supports contactless payment"
+  FORMAT "yes/no"
+  INITIAL "yes"
+  LABEL "Is Contactless"
+  POSITION 19
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Contactless"
+  ORDER 180
+  MANDATORY
+
+ADD FIELD "UpdatedAt" OF "Card" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 20
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 190
+  MANDATORY
+
+ADD INDEX "PkCard" ON "Card"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CardId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Card"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CardId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Card"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CardId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Card"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CardId" ASCENDING
+
+ADD INDEX "UxCardToken" ON "Card"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  INDEX-FIELD "CardToken" ASCENDING
+
+ADD INDEX "IxAccount" ON "Card"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "AccountId" ASCENDING
+
+ADD INDEX "IxCustomer" ON "Card"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+
+ADD TABLE "CustomerAddress"
+  AREA "PB_Master_Std"
+  LABEL "Customer Address"
+  DESCRIPTION "Postal addresses (home, mailing, work)"
+  DUMP-NAME "customeraddress"
+
+ADD FIELD "CustomerAddressId" OF "CustomerAddress" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCustomerAddressId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Address Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Address Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "CustomerAddress" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "CustomerAddress" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "CustomerAddress" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "CustomerAddress" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "CustomerAddress" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "AddressKind" OF "CustomerAddress" AS character
+  DESCRIPTION "Kind of address"
+  FORMAT "x(8)"
+  INITIAL "HOME"
+  LABEL "Address Kind"
+  POSITION 8
+  MAX-WIDTH 16
+  COLUMN-LABEL "Address Kind"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "AddressLine1" OF "CustomerAddress" AS character
+  DESCRIPTION "First address line"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Address Line 1"
+  POSITION 9
+  MAX-WIDTH 120
+  COLUMN-LABEL "Address Line 1"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "AddressLine2" OF "CustomerAddress" AS character
+  DESCRIPTION "Second address line (apartment, suite)"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Address Line 2"
+  POSITION 10
+  MAX-WIDTH 120
+  COLUMN-LABEL "Address Line 2"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "City" OF "CustomerAddress" AS character
+  DESCRIPTION "City name"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "City"
+  POSITION 11
+  MAX-WIDTH 80
+  COLUMN-LABEL "City"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "StateProvince" OF "CustomerAddress" AS character
+  DESCRIPTION "State or province"
+  FORMAT "x(30)"
+  INITIAL ""
+  LABEL "State Province"
+  POSITION 12
+  MAX-WIDTH 60
+  COLUMN-LABEL "State Province"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "PostalCode" OF "CustomerAddress" AS character
+  DESCRIPTION "Postal / ZIP code"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Postal Code"
+  POSITION 13
+  MAX-WIDTH 20
+  COLUMN-LABEL "Postal Code"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "CountryCode" OF "CustomerAddress" AS character
+  DESCRIPTION "ISO country code"
+  FORMAT "x(2)"
+  INITIAL "US"
+  LABEL "Country Code"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Country Code"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "IsPrimary" OF "CustomerAddress" AS logical
+  DESCRIPTION "Primary entry of its kind for the customer"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Primary"
+  POSITION 15
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Primary"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "ValidFrom" OF "CustomerAddress" AS date
+  DESCRIPTION "First date the address is valid"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Valid From"
+  POSITION 16
+  MAX-WIDTH 4
+  COLUMN-LABEL "Valid From"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "ValidTo" OF "CustomerAddress" AS date
+  DESCRIPTION "Last date the address is valid"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Valid To"
+  POSITION 17
+  MAX-WIDTH 4
+  COLUMN-LABEL "Valid To"
+  ORDER 160
+
+ADD FIELD "UpdatedAt" OF "CustomerAddress" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 18
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 170
+  MANDATORY
+
+ADD INDEX "PkCustomerAddress" ON "CustomerAddress"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CustomerAddressId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "CustomerAddress"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CustomerAddressId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "CustomerAddress"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CustomerAddressId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "CustomerAddress"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CustomerAddressId" ASCENDING
+
+ADD INDEX "IxCustomer" ON "CustomerAddress"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+  INDEX-FIELD "AddressKind" ASCENDING
+
+ADD INDEX "IxCountryPostal" ON "CustomerAddress"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CountryCode" ASCENDING
+  INDEX-FIELD "PostalCode" ASCENDING
+
+ADD TABLE "CustomerContact"
+  AREA "PB_Master_Narrow"
+  LABEL "Customer Contact"
+  DESCRIPTION "Phone numbers and emails"
+  DUMP-NAME "customercontact"
+
+ADD FIELD "CustomerContactId" OF "CustomerContact" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCustomerContactId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Contact Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Contact Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "CustomerContact" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "CustomerContact" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "CustomerContact" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "CustomerContact" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "CustomerContact" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "ContactKind" OF "CustomerContact" AS character
+  DESCRIPTION "Kind of contact"
+  FORMAT "x(8)"
+  INITIAL ""
+  LABEL "Contact Kind"
+  POSITION 8
+  MAX-WIDTH 16
+  COLUMN-LABEL "Contact Kind"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "ContactValue" OF "CustomerContact" AS character
+  DESCRIPTION "Phone number or email address"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Contact Value"
+  POSITION 9
+  MAX-WIDTH 160
+  COLUMN-LABEL "Contact Value"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "IsPrimary" OF "CustomerContact" AS logical
+  DESCRIPTION "Primary entry of its kind for the customer"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Primary"
+  POSITION 10
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Primary"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "IsVerified" OF "CustomerContact" AS logical
+  DESCRIPTION "Whether the contact has been verified"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Verified"
+  POSITION 11
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Verified"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "VerifiedAt" OF "CustomerContact" AS datetime-tz
+  DESCRIPTION "When the contact was verified"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Verified At"
+  POSITION 12
+  MAX-WIDTH 12
+  COLUMN-LABEL "Verified At"
+  ORDER 110
+
+ADD FIELD "UpdatedAt" OF "CustomerContact" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 13
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 120
+  MANDATORY
+
+ADD INDEX "PkCustomerContact" ON "CustomerContact"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CustomerContactId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "CustomerContact"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CustomerContactId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "CustomerContact"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CustomerContactId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "CustomerContact"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CustomerContactId" ASCENDING
+
+ADD INDEX "IxCustomer" ON "CustomerContact"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+  INDEX-FIELD "ContactKind" ASCENDING
+
+ADD INDEX "IxContactValue" ON "CustomerContact"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "ContactValue" ASCENDING
+
+ADD TABLE "CustomerDocument"
+  AREA "PB_Master_Std"
+  LABEL "Customer Document"
+  DESCRIPTION "Identity documents and scans"
+  DUMP-NAME "customerdocument"
+
+ADD FIELD "CustomerDocumentId" OF "CustomerDocument" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCustomerDocumentId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Document Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Document Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "CustomerDocument" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "CustomerDocument" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "CustomerDocument" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "CustomerDocument" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "CustomerDocument" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "DocumentKind" OF "CustomerDocument" AS character
+  DESCRIPTION "PASSPORT, DRIVERLIC, UTILITYBILL, TAXFORM, OTHER"
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Document Kind"
+  POSITION 8
+  MAX-WIDTH 24
+  COLUMN-LABEL "Document Kind"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "DocumentNumberMasked" OF "CustomerDocument" AS character
+  DESCRIPTION "Masked document number"
+  FORMAT "x(20)"
+  INITIAL ""
+  LABEL "Document Number Masked"
+  POSITION 9
+  MAX-WIDTH 40
+  COLUMN-LABEL "Document Number Masked"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "IssuingCountryCode" OF "CustomerDocument" AS character
+  DESCRIPTION "Country that issued the document"
+  FORMAT "x(2)"
+  INITIAL "US"
+  LABEL "Issuing Country Code"
+  POSITION 10
+  MAX-WIDTH 4
+  COLUMN-LABEL "Issuing Country Code"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "IssueDate" OF "CustomerDocument" AS date
+  DESCRIPTION "Date issued"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Issue Date"
+  POSITION 11
+  MAX-WIDTH 4
+  COLUMN-LABEL "Issue Date"
+  ORDER 100
+
+ADD FIELD "ExpiryDate" OF "CustomerDocument" AS date
+  DESCRIPTION "Document expiry date"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Expiry Date"
+  POSITION 12
+  MAX-WIDTH 4
+  COLUMN-LABEL "Expiry Date"
+  ORDER 110
+
+ADD FIELD "VerificationStatus" OF "CustomerDocument" AS character
+  DESCRIPTION "Verification status"
+  FORMAT "x(10)"
+  INITIAL "PENDING"
+  LABEL "Verification Status"
+  POSITION 13
+  MAX-WIDTH 20
+  COLUMN-LABEL "Verification Status"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "VerifiedByEmployeeId" OF "CustomerDocument" AS int64
+  DESCRIPTION "Reference to Employee"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Verified By Employee Id"
+  POSITION 14
+  MAX-WIDTH 8
+  COLUMN-LABEL "Verified By Employee Id"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "MimeType" OF "CustomerDocument" AS character
+  DESCRIPTION "MIME type of the stored content"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "Mime Type"
+  POSITION 15
+  MAX-WIDTH 80
+  COLUMN-LABEL "Mime Type"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "FileName" OF "CustomerDocument" AS character
+  DESCRIPTION "Original file name"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "File Name"
+  POSITION 16
+  MAX-WIDTH 160
+  COLUMN-LABEL "File Name"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "FileSizeBytes" OF "CustomerDocument" AS int64
+  DESCRIPTION "Equals the Content length; 0 when absent"
+  FORMAT ">>>>>>>>>9"
+  INITIAL "0"
+  LABEL "File Size Bytes"
+  POSITION 17
+  MAX-WIDTH 8
+  COLUMN-LABEL "File Size Bytes"
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "Content" OF "CustomerDocument" AS blob
+  DESCRIPTION "Present on 10% of rows; 4–64 KB (avg 16 KB). Area PB_Lob_Doc"
+  FORMAT "x(8)"
+  INITIAL ?
+  LABEL "Content"
+  POSITION 18
+  LOB-AREA "PB_Lob_Doc"
+  LOB-BYTES 65536
+  LOB-SIZE 64K
+  COLUMN-LABEL "Content"
+  ORDER 170
+
+ADD FIELD "UpdatedAt" OF "CustomerDocument" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 19
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 180
+  MANDATORY
+
+ADD INDEX "PkCustomerDocument" ON "CustomerDocument"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CustomerDocumentId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "CustomerDocument"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CustomerDocumentId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "CustomerDocument"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CustomerDocumentId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "CustomerDocument"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CustomerDocumentId" ASCENDING
+
+ADD INDEX "IxCustomer" ON "CustomerDocument"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+  INDEX-FIELD "DocumentKind" ASCENDING
+
+ADD INDEX "IxExpiry" ON "CustomerDocument"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "ExpiryDate" ASCENDING
+
+ADD TABLE "CustomerNote"
+  AREA "PB_Master_Std"
+  LABEL "Customer Note"
+  DESCRIPTION "Free-text notes and support interactions"
+  DUMP-NAME "customernote"
+
+ADD FIELD "CustomerNoteId" OF "CustomerNote" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCustomerNoteId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Note Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Note Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "CustomerNote" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "CustomerNote" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "CustomerNote" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "CustomerNote" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "CustomerNote" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "EmployeeId" OF "CustomerNote" AS int64
+  DESCRIPTION "Reference to Employee"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Employee Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Employee Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "NoteKind" OF "CustomerNote" AS character
+  DESCRIPTION "Kind of note"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Note Kind"
+  POSITION 9
+  MAX-WIDTH 20
+  COLUMN-LABEL "Note Kind"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "NoteDateTime" OF "CustomerNote" AS datetime-tz
+  DESCRIPTION "When the note was written"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Note Date Time"
+  POSITION 10
+  MAX-WIDTH 12
+  COLUMN-LABEL "Note Date Time"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "Summary" OF "CustomerNote" AS character
+  DESCRIPTION "80–300 characters of generated banking vocabulary (word-indexed)"
+  FORMAT "x(300)"
+  INITIAL ""
+  LABEL "Summary"
+  POSITION 11
+  MAX-WIDTH 600
+  COLUMN-LABEL "Summary"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "NoteText" OF "CustomerNote" AS clob
+  DESCRIPTION "Present on 60%; 200 B–8 KB (avg 1.2 KB). Area PB_Lob_Text"
+  FORMAT "x(8)"
+  INITIAL ?
+  LABEL "Note Text"
+  POSITION 12
+  LOB-AREA "PB_Lob_Text"
+  LOB-BYTES 8192
+  LOB-SIZE 8K
+  CLOB-CODEPAGE "UTF-8"
+  CLOB-COLLATION "BASIC"
+  CLOB-TYPE 1
+  COLUMN-LABEL "Note Text"
+  ORDER 110
+
+ADD FIELD "FollowUpDate" OF "CustomerNote" AS date
+  DESCRIPTION "Follow-up date"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Follow Up Date"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Follow Up Date"
+  ORDER 120
+
+ADD FIELD "IsResolved" OF "CustomerNote" AS logical
+  DESCRIPTION "Whether the note is resolved"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Resolved"
+  POSITION 14
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Resolved"
+  ORDER 130
+  MANDATORY
+
+ADD INDEX "PkCustomerNote" ON "CustomerNote"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CustomerNoteId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "CustomerNote"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CustomerNoteId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "CustomerNote"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CustomerNoteId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "CustomerNote"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CustomerNoteId" ASCENDING
+
+ADD INDEX "IxCustomerDate" ON "CustomerNote"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+  INDEX-FIELD "NoteDateTime" DESCENDING
+
+ADD INDEX "IxEmployeeDate" ON "CustomerNote"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "EmployeeId" ASCENDING
+  INDEX-FIELD "NoteDateTime" ASCENDING
+
+ADD INDEX "WxSummary" ON "CustomerNote"
+  AREA "PB_Master_Idx"
+  WORD
+  INDEX-FIELD "Summary" ASCENDING
+
+ADD TABLE "InterestRateHistory"
+  AREA "PB_Ref_Data"
+  LABEL "Interest Rate History"
+  DESCRIPTION "Rate changes per account type over time"
+  DUMP-NAME "interestratehistory"
+
+ADD FIELD "InterestRateHistoryId" OF "InterestRateHistory" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqInterestRateHistoryId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Interest Rate History Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Interest Rate History Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "InterestRateHistory" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "InterestRateHistory" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "InterestRateHistory" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "InterestRateHistory" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountTypeId" OF "InterestRateHistory" AS int64
+  DESCRIPTION "Reference to AccountType"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Type Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Type Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "EffectiveDate" OF "InterestRateHistory" AS date
+  DESCRIPTION "Date the rate took effect"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Effective Date"
+  POSITION 8
+  MAX-WIDTH 4
+  COLUMN-LABEL "Effective Date"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "InterestRate" OF "InterestRateHistory" AS decimal
+  DESCRIPTION "Annual interest rate (%)"
+  FORMAT ">>9.9999"
+  INITIAL "0"
+  LABEL "Interest Rate"
+  POSITION 9
+  MAX-WIDTH 17
+  COLUMN-LABEL "Interest Rate"
+  DECIMALS 4
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "ChangedByEmployeeId" OF "InterestRateHistory" AS int64
+  DESCRIPTION "Reference to Employee"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Changed By Employee Id"
+  POSITION 10
+  MAX-WIDTH 8
+  COLUMN-LABEL "Changed By Employee Id"
+  ORDER 90
+  MANDATORY
+
+ADD INDEX "PkInterestRateHistory" ON "InterestRateHistory"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "InterestRateHistoryId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "InterestRateHistory"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "InterestRateHistoryId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "InterestRateHistory"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "InterestRateHistoryId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "InterestRateHistory"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "InterestRateHistoryId" ASCENDING
+
+ADD INDEX "UxTypeEffective" ON "InterestRateHistory"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "AccountTypeId" ASCENDING
+  INDEX-FIELD "EffectiveDate" DESCENDING
+
+ADD TABLE "Loan"
+  AREA "PB_Master_Wide"
+  LABEL "Loan"
+  DESCRIPTION "Loan agreement"
+  DUMP-NAME "loan"
+
+ADD FIELD "LoanId" OF "Loan" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqLoanId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Loan Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Loan Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Loan" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Loan" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Loan" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Loan" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "LoanNumber" OF "Loan" AS character
+  DESCRIPTION "L + 13 digits"
+  FORMAT "x(14)"
+  INITIAL ""
+  LABEL "Loan Number"
+  POSITION 7
+  MAX-WIDTH 28
+  COLUMN-LABEL "Loan Number"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "Loan" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "DisbursementAccountId" OF "Loan" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Disbursement Account Id"
+  POSITION 9
+  MAX-WIDTH 8
+  COLUMN-LABEL "Disbursement Account Id"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "LoanOfficerEmployeeId" OF "Loan" AS int64
+  DESCRIPTION "Reference to Employee"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Loan Officer Employee Id"
+  POSITION 10
+  MAX-WIDTH 8
+  COLUMN-LABEL "Loan Officer Employee Id"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "LoanKind" OF "Loan" AS character
+  DESCRIPTION "Kind of loan"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Loan Kind"
+  POSITION 11
+  MAX-WIDTH 20
+  COLUMN-LABEL "Loan Kind"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "PrincipalAmount" OF "Loan" AS decimal
+  DESCRIPTION "Original principal"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Principal Amount"
+  POSITION 12
+  MAX-WIDTH 17
+  COLUMN-LABEL "Principal Amount"
+  DECIMALS 2
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "InterestRate" OF "Loan" AS decimal
+  DESCRIPTION "Annual interest rate (%)"
+  FORMAT ">>9.9999"
+  INITIAL "0"
+  LABEL "Interest Rate"
+  POSITION 13
+  MAX-WIDTH 17
+  COLUMN-LABEL "Interest Rate"
+  DECIMALS 4
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "TermMonths" OF "Loan" AS integer
+  DESCRIPTION "Term in months"
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Term Months"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Term Months"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "OriginationDate" OF "Loan" AS date
+  DESCRIPTION "Date the loan was originated"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Origination Date"
+  POSITION 15
+  MAX-WIDTH 4
+  COLUMN-LABEL "Origination Date"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "MaturityDate" OF "Loan" AS date
+  DESCRIPTION "Date the loan matures"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Maturity Date"
+  POSITION 16
+  MAX-WIDTH 4
+  COLUMN-LABEL "Maturity Date"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "MonthlyPaymentAmount" OF "Loan" AS decimal
+  DESCRIPTION "Scheduled monthly payment"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Monthly Payment Amount"
+  POSITION 17
+  MAX-WIDTH 17
+  COLUMN-LABEL "Monthly Payment Amount"
+  DECIMALS 2
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "OutstandingPrincipal" OF "Loan" AS decimal
+  DESCRIPTION "Principal still owed"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Outstanding Principal"
+  POSITION 18
+  MAX-WIDTH 17
+  COLUMN-LABEL "Outstanding Principal"
+  DECIMALS 2
+  ORDER 170
+  MANDATORY
+
+ADD FIELD "NextPaymentDate" OF "Loan" AS date
+  DESCRIPTION "Date the next payment is due"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Next Payment Date"
+  POSITION 19
+  MAX-WIDTH 4
+  COLUMN-LABEL "Next Payment Date"
+  ORDER 180
+
+ADD FIELD "LoanStatus" OF "Loan" AS character
+  DESCRIPTION "Lifecycle status"
+  FORMAT "x(10)"
+  INITIAL "CURRENT"
+  LABEL "Loan Status"
+  POSITION 20
+  MAX-WIDTH 20
+  COLUMN-LABEL "Loan Status"
+  ORDER 190
+  MANDATORY
+
+ADD FIELD "CollateralDescription" OF "Loan" AS character
+  DESCRIPTION "200–400 characters (width)"
+  FORMAT "x(400)"
+  INITIAL ""
+  LABEL "Collateral Description"
+  POSITION 21
+  MAX-WIDTH 800
+  COLUMN-LABEL "Collateral Description"
+  ORDER 200
+  MANDATORY
+
+ADD FIELD "UnderwritingNotes" OF "Loan" AS character
+  DESCRIPTION "150–300 characters (width)"
+  FORMAT "x(300)"
+  INITIAL ""
+  LABEL "Underwriting Notes"
+  POSITION 22
+  MAX-WIDTH 600
+  COLUMN-LABEL "Underwriting Notes"
+  ORDER 210
+  MANDATORY
+
+ADD FIELD "UpdatedAt" OF "Loan" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 23
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 220
+  MANDATORY
+
+ADD INDEX "PkLoan" ON "Loan"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "LoanId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Loan"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "LoanId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Loan"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "LoanId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Loan"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "LoanId" ASCENDING
+
+ADD INDEX "UxLoanNumber" ON "Loan"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  INDEX-FIELD "LoanNumber" ASCENDING
+
+ADD INDEX "IxCustomer" ON "Loan"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+
+ADD INDEX "IxStatusNextPayment" ON "Loan"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "LoanStatus" ASCENDING
+  INDEX-FIELD "NextPaymentDate" ASCENDING
+
+ADD TABLE "LoginEvent"
+  AREA "PB_Txn_Large"
+  LABEL "Login Event"
+  DESCRIPTION "Online banking login/session events"
+  DUMP-NAME "loginevent"
+
+ADD FIELD "LoginEventId" OF "LoginEvent" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqLoginEventId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Login Event Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Login Event Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "LoginEvent" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "LoginEvent" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "LoginEvent" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "LoginEvent" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "LoginEvent" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "EventDateTime" OF "LoginEvent" AS datetime-tz
+  DESCRIPTION "When the event occurred"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Event Date Time"
+  POSITION 8
+  MAX-WIDTH 12
+  COLUMN-LABEL "Event Date Time"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "EventKind" OF "LoginEvent" AS character
+  DESCRIPTION "LOGIN 70%, FAILED 8%, MFA 12%, LOGOUT 10%"
+  FORMAT "x(8)"
+  INITIAL "LOGIN"
+  LABEL "Event Kind"
+  POSITION 9
+  MAX-WIDTH 16
+  COLUMN-LABEL "Event Kind"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "Channel" OF "LoginEvent" AS character
+  DESCRIPTION "WEB, MOBILE"
+  FORMAT "x(6)"
+  INITIAL "WEB"
+  LABEL "Channel"
+  POSITION 10
+  MAX-WIDTH 12
+  COLUMN-LABEL "Channel"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "IpAddress" OF "LoginEvent" AS character
+  DESCRIPTION "Client IP address"
+  FORMAT "x(39)"
+  INITIAL ""
+  LABEL "Ip Address"
+  POSITION 11
+  MAX-WIDTH 78
+  COLUMN-LABEL "Ip Address"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "DeviceId" OF "LoginEvent" AS character
+  DESCRIPTION "Client device identifier"
+  FORMAT "x(32)"
+  INITIAL ""
+  LABEL "Device Id"
+  POSITION 12
+  MAX-WIDTH 64
+  COLUMN-LABEL "Device Id"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "IsSuccess" OF "LoginEvent" AS logical
+  DESCRIPTION "Whether the event succeeded"
+  FORMAT "yes/no"
+  INITIAL "yes"
+  LABEL "Is Success"
+  POSITION 13
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Success"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "SessionSeconds" OF "LoginEvent" AS integer
+  DESCRIPTION "Session length in seconds"
+  FORMAT ">>>>>9"
+  INITIAL "0"
+  LABEL "Session Seconds"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Session Seconds"
+  ORDER 130
+  MANDATORY
+
+ADD INDEX "PkLoginEvent" ON "LoginEvent"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "LoginEventId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "LoginEvent"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "LoginEventId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "LoginEvent"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "LoginEventId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "LoginEvent"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "LoginEventId" ASCENDING
+
+ADD INDEX "IxCustomerTime" ON "LoginEvent"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+  INDEX-FIELD "EventDateTime" DESCENDING
+
+ADD TABLE "MonthlyBalance"
+  AREA "PB_Txn_Large"
+  LABEL "Monthly Balance"
+  DESCRIPTION "Month-end balance snapshot per account (opening/closing/min/max/average balance, totals)"
+  DUMP-NAME "monthlybalance"
+
+ADD FIELD "MonthlyBalanceId" OF "MonthlyBalance" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqMonthlyBalanceId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Monthly Balance Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Monthly Balance Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "MonthlyBalance" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "MonthlyBalance" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "MonthlyBalance" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "MonthlyBalance" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountId" OF "MonthlyBalance" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "BalanceMonth" OF "MonthlyBalance" AS date
+  DESCRIPTION "Month the snapshot describes"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Balance Month"
+  POSITION 8
+  MAX-WIDTH 4
+  COLUMN-LABEL "Balance Month"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "OpeningBalance" OF "MonthlyBalance" AS decimal
+  DESCRIPTION "Balance at period start"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Opening Balance"
+  POSITION 9
+  MAX-WIDTH 17
+  COLUMN-LABEL "Opening Balance"
+  DECIMALS 2
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "ClosingBalance" OF "MonthlyBalance" AS decimal
+  DESCRIPTION "Balance at period end"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Closing Balance"
+  POSITION 10
+  MAX-WIDTH 17
+  COLUMN-LABEL "Closing Balance"
+  DECIMALS 2
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "MinimumBalance" OF "MonthlyBalance" AS decimal
+  DESCRIPTION "Minimum balance"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Minimum Balance"
+  POSITION 11
+  MAX-WIDTH 17
+  COLUMN-LABEL "Minimum Balance"
+  DECIMALS 2
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "MaximumBalance" OF "MonthlyBalance" AS decimal
+  DESCRIPTION "Highest balance during the period"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Maximum Balance"
+  POSITION 12
+  MAX-WIDTH 17
+  COLUMN-LABEL "Maximum Balance"
+  DECIMALS 2
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "AverageDailyBalance" OF "MonthlyBalance" AS decimal
+  DESCRIPTION "Average of end-of-day balances"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Average Daily Balance"
+  POSITION 13
+  MAX-WIDTH 17
+  COLUMN-LABEL "Average Daily Balance"
+  DECIMALS 2
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "TotalDebits" OF "MonthlyBalance" AS decimal
+  DESCRIPTION "Sum of debit amounts in the period"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Total Debits"
+  POSITION 14
+  MAX-WIDTH 17
+  COLUMN-LABEL "Total Debits"
+  DECIMALS 2
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "TotalCredits" OF "MonthlyBalance" AS decimal
+  DESCRIPTION "Sum of credit amounts in the period"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Total Credits"
+  POSITION 15
+  MAX-WIDTH 17
+  COLUMN-LABEL "Total Credits"
+  DECIMALS 2
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "DebitCount" OF "MonthlyBalance" AS integer
+  DESCRIPTION "Number of debits in the period"
+  FORMAT ">>>>9"
+  INITIAL "0"
+  LABEL "Debit Count"
+  POSITION 16
+  MAX-WIDTH 4
+  COLUMN-LABEL "Debit Count"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "CreditCount" OF "MonthlyBalance" AS integer
+  DESCRIPTION "Number of credits in the period"
+  FORMAT ">>>>9"
+  INITIAL "0"
+  LABEL "Credit Count"
+  POSITION 17
+  MAX-WIDTH 4
+  COLUMN-LABEL "Credit Count"
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "DaysOverdrawn" OF "MonthlyBalance" AS integer
+  DESCRIPTION "Days with a negative end-of-day balance"
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Days Overdrawn"
+  POSITION 18
+  MAX-WIDTH 4
+  COLUMN-LABEL "Days Overdrawn"
+  ORDER 170
+  MANDATORY
+
+ADD INDEX "PkMonthlyBalance" ON "MonthlyBalance"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "MonthlyBalanceId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "MonthlyBalance"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "MonthlyBalanceId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "MonthlyBalance"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "MonthlyBalanceId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "MonthlyBalance"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "MonthlyBalanceId" ASCENDING
+
+ADD INDEX "UxAccountMonth" ON "MonthlyBalance"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  INDEX-FIELD "AccountId" ASCENDING
+  INDEX-FIELD "BalanceMonth" ASCENDING
+
+ADD INDEX "IxBalanceMonth" ON "MonthlyBalance"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "BalanceMonth" ASCENDING
+
+ADD TABLE "Payee"
+  AREA "PB_Master_Std"
+  LABEL "Payee"
+  DESCRIPTION "Saved beneficiaries for payments"
+  DUMP-NAME "payee"
+
+ADD FIELD "PayeeId" OF "Payee" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqPayeeId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Payee Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Payee Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Payee" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Payee" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Payee" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Payee" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CustomerId" OF "Payee" AS int64
+  DESCRIPTION "Reference to Customer"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Customer Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Customer Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "PayeeName" OF "Payee" AS character
+  DESCRIPTION "Name of the payee"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Payee Name"
+  POSITION 8
+  MAX-WIDTH 160
+  COLUMN-LABEL "Payee Name"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "PayeeKind" OF "Payee" AS character
+  DESCRIPTION "Kind of payee"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Payee Kind"
+  POSITION 9
+  MAX-WIDTH 20
+  COLUMN-LABEL "Payee Kind"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "BankRoutingNumber" OF "Payee" AS character
+  DESCRIPTION "Payee bank routing number"
+  FORMAT "x(9)"
+  INITIAL ""
+  LABEL "Bank Routing Number"
+  POSITION 10
+  MAX-WIDTH 18
+  COLUMN-LABEL "Bank Routing Number"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "AccountNumberMasked" OF "Payee" AS character
+  DESCRIPTION "Masked payee account number"
+  FORMAT "x(20)"
+  INITIAL ""
+  LABEL "Account Number Masked"
+  POSITION 11
+  MAX-WIDTH 40
+  COLUMN-LABEL "Account Number Masked"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "ReferenceText" OF "Payee" AS character
+  DESCRIPTION "Customer's account number at the biller"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "Reference Text"
+  POSITION 12
+  MAX-WIDTH 80
+  COLUMN-LABEL "Reference Text"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "Email" OF "Payee" AS character
+  DESCRIPTION "Email address"
+  FORMAT "x(80)"
+  INITIAL ""
+  LABEL "Email"
+  POSITION 13
+  MAX-WIDTH 160
+  COLUMN-LABEL "Email"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "AddressLine1" OF "Payee" AS character
+  DESCRIPTION "First address line"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Address Line 1"
+  POSITION 14
+  MAX-WIDTH 120
+  COLUMN-LABEL "Address Line 1"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "City" OF "Payee" AS character
+  DESCRIPTION "City name"
+  FORMAT "x(40)"
+  INITIAL ""
+  LABEL "City"
+  POSITION 15
+  MAX-WIDTH 80
+  COLUMN-LABEL "City"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "PostalCode" OF "Payee" AS character
+  DESCRIPTION "Postal / ZIP code"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Postal Code"
+  POSITION 16
+  MAX-WIDTH 20
+  COLUMN-LABEL "Postal Code"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "IsFavorite" OF "Payee" AS logical
+  DESCRIPTION "Marked as a favourite by the customer"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Favorite"
+  POSITION 17
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Favorite"
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "LastPaidDate" OF "Payee" AS date
+  DESCRIPTION "Date of the last payment to this payee"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Last Paid Date"
+  POSITION 18
+  MAX-WIDTH 4
+  COLUMN-LABEL "Last Paid Date"
+  ORDER 170
+
+ADD FIELD "UpdatedAt" OF "Payee" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 19
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 180
+  MANDATORY
+
+ADD INDEX "PkPayee" ON "Payee"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "PayeeId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Payee"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "PayeeId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Payee"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "PayeeId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Payee"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "PayeeId" ASCENDING
+
+ADD INDEX "IxCustomerName" ON "Payee"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "CustomerId" ASCENDING
+  INDEX-FIELD "PayeeName" ASCENDING
+
+ADD TABLE "CreditTransaction"
+  AREA "PB_Txn_Large"
+  LABEL "Credit Transaction"
+  DESCRIPTION "Money entering an account"
+  DUMP-NAME "credittransaction"
+
+ADD FIELD "CreditTransactionId" OF "CreditTransaction" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCreditTransactionId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Credit Transaction Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Credit Transaction Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "CreditTransaction" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "CreditTransaction" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "CreditTransaction" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "CreditTransaction" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountId" OF "CreditTransaction" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "TransactionTypeId" OF "CreditTransaction" AS int64
+  DESCRIPTION "Reference to TransactionType"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Transaction Type Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Transaction Type Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "AccountStatementId" OF "CreditTransaction" AS int64
+  DESCRIPTION "Reference to AccountStatement"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Statement Id"
+  POSITION 9
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Statement Id"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "PostedDate" OF "CreditTransaction" AS date
+  DESCRIPTION "Business date the transaction posted"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Posted Date"
+  POSITION 10
+  MAX-WIDTH 4
+  COLUMN-LABEL "Posted Date"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "PostedAt" OF "CreditTransaction" AS datetime-tz
+  DESCRIPTION "Timestamp the transaction posted"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Posted At"
+  POSITION 11
+  MAX-WIDTH 12
+  COLUMN-LABEL "Posted At"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "Amount" OF "CreditTransaction" AS decimal
+  DESCRIPTION "Amount credited (positive)"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Amount"
+  POSITION 12
+  MAX-WIDTH 17
+  COLUMN-LABEL "Amount"
+  DECIMALS 2
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "RunningBalance" OF "CreditTransaction" AS decimal
+  DESCRIPTION "Account balance after posting"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Running Balance"
+  POSITION 13
+  MAX-WIDTH 17
+  COLUMN-LABEL "Running Balance"
+  DECIMALS 2
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "Description" OF "CreditTransaction" AS character
+  DESCRIPTION "Human-readable description"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Description"
+  POSITION 14
+  MAX-WIDTH 120
+  COLUMN-LABEL "Description"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "PayerName" OF "CreditTransaction" AS character
+  DESCRIPTION "Name of the payer"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Payer Name"
+  POSITION 15
+  MAX-WIDTH 120
+  COLUMN-LABEL "Payer Name"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "ReferenceNumber" OF "CreditTransaction" AS character
+  DESCRIPTION "External reference number"
+  FORMAT "x(20)"
+  INITIAL ""
+  LABEL "Reference Number"
+  POSITION 16
+  MAX-WIDTH 40
+  COLUMN-LABEL "Reference Number"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "IsPayroll" OF "CreditTransaction" AS logical
+  DESCRIPTION "40% yes"
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Is Payroll"
+  POSITION 17
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Payroll"
+  ORDER 160
+  MANDATORY
+
+ADD INDEX "PkCreditTransaction" ON "CreditTransaction"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CreditTransactionId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "CreditTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CreditTransactionId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "CreditTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CreditTransactionId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "CreditTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CreditTransactionId" ASCENDING
+
+ADD INDEX "IxAccountPosted" ON "CreditTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "AccountId" ASCENDING
+  INDEX-FIELD "PostedAt" DESCENDING
+
+ADD INDEX "IxAccountStatement" ON "CreditTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "AccountStatementId" ASCENDING
+
+ADD INDEX "IxPostedDate" ON "CreditTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "PostedDate" ASCENDING
+
+ADD TABLE "DebitTransaction"
+  AREA "PB_Txn_Debit"
+  LABEL "Debit Transaction"
+  DESCRIPTION "Money leaving an account"
+  DUMP-NAME "debittransaction"
+
+ADD FIELD "DebitTransactionId" OF "DebitTransaction" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqDebitTransactionId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Debit Transaction Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Debit Transaction Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "DebitTransaction" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "DebitTransaction" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "DebitTransaction" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "DebitTransaction" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountId" OF "DebitTransaction" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "TransactionTypeId" OF "DebitTransaction" AS int64
+  DESCRIPTION "Reference to TransactionType"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Transaction Type Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Transaction Type Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "AccountStatementId" OF "DebitTransaction" AS int64
+  DESCRIPTION "Reference to AccountStatement"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Statement Id"
+  POSITION 9
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Statement Id"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "MerchantId" OF "DebitTransaction" AS int64
+  DESCRIPTION "Reference to Merchant"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Merchant Id"
+  POSITION 10
+  MAX-WIDTH 8
+  COLUMN-LABEL "Merchant Id"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "PostedDate" OF "DebitTransaction" AS date
+  DESCRIPTION "Business date the transaction posted"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Posted Date"
+  POSITION 11
+  MAX-WIDTH 4
+  COLUMN-LABEL "Posted Date"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "PostedAt" OF "DebitTransaction" AS datetime-tz
+  DESCRIPTION "Timestamp the transaction posted"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Posted At"
+  POSITION 12
+  MAX-WIDTH 12
+  COLUMN-LABEL "Posted At"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "Amount" OF "DebitTransaction" AS decimal
+  DESCRIPTION "Amount debited (positive)"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Amount"
+  POSITION 13
+  MAX-WIDTH 17
+  COLUMN-LABEL "Amount"
+  DECIMALS 2
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "RunningBalance" OF "DebitTransaction" AS decimal
+  DESCRIPTION "Balance after posting; may be negative"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Running Balance"
+  POSITION 14
+  MAX-WIDTH 17
+  COLUMN-LABEL "Running Balance"
+  DECIMALS 2
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "Description" OF "DebitTransaction" AS character
+  DESCRIPTION "Human-readable description"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Description"
+  POSITION 15
+  MAX-WIDTH 120
+  COLUMN-LABEL "Description"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "ReferenceNumber" OF "DebitTransaction" AS character
+  DESCRIPTION "External reference number"
+  FORMAT "x(20)"
+  INITIAL ""
+  LABEL "Reference Number"
+  POSITION 16
+  MAX-WIDTH 40
+  COLUMN-LABEL "Reference Number"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "CheckNumber" OF "DebitTransaction" AS integer
+  DESCRIPTION "Set on 1% of rows (checks)"
+  FORMAT ">>>>>9"
+  INITIAL "0"
+  LABEL "Check Number"
+  POSITION 17
+  MAX-WIDTH 4
+  COLUMN-LABEL "Check Number"
+  ORDER 160
+  MANDATORY
+
+ADD INDEX "PkDebitTransaction" ON "DebitTransaction"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "DebitTransactionId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "DebitTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "DebitTransactionId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "DebitTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "DebitTransactionId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "DebitTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "DebitTransactionId" ASCENDING
+
+ADD INDEX "IxAccountPosted" ON "DebitTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "AccountId" ASCENDING
+  INDEX-FIELD "PostedAt" DESCENDING
+
+ADD INDEX "IxAccountStatement" ON "DebitTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "AccountStatementId" ASCENDING
+
+ADD INDEX "IxPostedDate" ON "DebitTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "PostedDate" ASCENDING
+
+ADD INDEX "IxMerchantDate" ON "DebitTransaction"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "MerchantId" ASCENDING
+  INDEX-FIELD "PostedDate" ASCENDING
+
+ADD TABLE "ScheduledPayment"
+  AREA "PB_Master_Std"
+  LABEL "Scheduled Payment"
+  DESCRIPTION "Recurring/future-dated payments"
+  DUMP-NAME "scheduledpayment"
+
+ADD FIELD "ScheduledPaymentId" OF "ScheduledPayment" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqScheduledPaymentId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Scheduled Payment Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Scheduled Payment Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "ScheduledPayment" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "ScheduledPayment" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "ScheduledPayment" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "ScheduledPayment" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountId" OF "ScheduledPayment" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "PayeeId" OF "ScheduledPayment" AS int64
+  DESCRIPTION "Reference to Payee"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Payee Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Payee Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "Amount" OF "ScheduledPayment" AS decimal
+  DESCRIPTION "Amount paid on each run"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Amount"
+  POSITION 9
+  MAX-WIDTH 17
+  COLUMN-LABEL "Amount"
+  DECIMALS 2
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "Frequency" OF "ScheduledPayment" AS character
+  DESCRIPTION "Recurrence frequency"
+  FORMAT "x(10)"
+  INITIAL "MONTHLY"
+  LABEL "Frequency"
+  POSITION 10
+  MAX-WIDTH 20
+  COLUMN-LABEL "Frequency"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "NextRunDate" OF "ScheduledPayment" AS date
+  DESCRIPTION "Date of the next execution"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Next Run Date"
+  POSITION 11
+  MAX-WIDTH 4
+  COLUMN-LABEL "Next Run Date"
+  ORDER 100
+
+ADD FIELD "EndDate" OF "ScheduledPayment" AS date
+  DESCRIPTION "Last date the schedule runs"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "End Date"
+  POSITION 12
+  MAX-WIDTH 4
+  COLUMN-LABEL "End Date"
+  ORDER 110
+
+ADD FIELD "Memo" OF "ScheduledPayment" AS character
+  DESCRIPTION "Payment memo"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Memo"
+  POSITION 13
+  MAX-WIDTH 120
+  COLUMN-LABEL "Memo"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "PaymentStatus" OF "ScheduledPayment" AS character
+  DESCRIPTION "Lifecycle status"
+  FORMAT "x(10)"
+  INITIAL "ACTIVE"
+  LABEL "Payment Status"
+  POSITION 14
+  MAX-WIDTH 20
+  COLUMN-LABEL "Payment Status"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "RunCount" OF "ScheduledPayment" AS integer
+  DESCRIPTION "Number of executions so far"
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Run Count"
+  POSITION 15
+  MAX-WIDTH 4
+  COLUMN-LABEL "Run Count"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "LastRunAt" OF "ScheduledPayment" AS datetime-tz
+  DESCRIPTION "When the schedule last ran"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Last Run At"
+  POSITION 16
+  MAX-WIDTH 12
+  COLUMN-LABEL "Last Run At"
+  ORDER 150
+
+ADD FIELD "UpdatedAt" OF "ScheduledPayment" AS datetime-tz
+  DESCRIPTION "Last modification time; equals CreatedAt right after the load."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Updated At"
+  POSITION 17
+  MAX-WIDTH 12
+  COLUMN-LABEL "Updated At"
+  ORDER 160
+  MANDATORY
+
+ADD INDEX "PkScheduledPayment" ON "ScheduledPayment"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "ScheduledPaymentId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "ScheduledPayment"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "ScheduledPaymentId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "ScheduledPayment"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "ScheduledPaymentId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "ScheduledPayment"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "ScheduledPaymentId" ASCENDING
+
+ADD INDEX "IxAccount" ON "ScheduledPayment"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "AccountId" ASCENDING
+
+ADD INDEX "IxPayee" ON "ScheduledPayment"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "PayeeId" ASCENDING
+
+ADD INDEX "IxStatusNextRun" ON "ScheduledPayment"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "PaymentStatus" ASCENDING
+  INDEX-FIELD "NextRunDate" ASCENDING
+
+ADD TABLE "StatementDocument"
+  AREA "PB_Master_Std"
+  LABEL "Statement Document"
+  DESCRIPTION "Rendered statement file"
+  DUMP-NAME "statementdocument"
+
+ADD FIELD "StatementDocumentId" OF "StatementDocument" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqStatementDocumentId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Statement Document Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Statement Document Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "StatementDocument" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "StatementDocument" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "StatementDocument" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "StatementDocument" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "AccountStatementId" OF "StatementDocument" AS int64
+  DESCRIPTION "Reference to AccountStatement"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Account Statement Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Account Statement Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "DocumentFormat" OF "StatementDocument" AS character
+  DESCRIPTION "Always PDF at load"
+  FORMAT "x(8)"
+  INITIAL "PDF"
+  LABEL "Document Format"
+  POSITION 8
+  MAX-WIDTH 16
+  COLUMN-LABEL "Document Format"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "PageCount" OF "StatementDocument" AS integer
+  DESCRIPTION "Number of pages"
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Page Count"
+  POSITION 9
+  MAX-WIDTH 4
+  COLUMN-LABEL "Page Count"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "Checksum" OF "StatementDocument" AS character
+  DESCRIPTION "SHA-256 hex of PdfContent"
+  FORMAT "x(64)"
+  INITIAL ""
+  LABEL "Checksum"
+  POSITION 10
+  MAX-WIDTH 128
+  COLUMN-LABEL "Checksum"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "RenderedAt" OF "StatementDocument" AS datetime-tz
+  DESCRIPTION "When the document was rendered"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Rendered At"
+  POSITION 11
+  MAX-WIDTH 12
+  COLUMN-LABEL "Rendered At"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "PdfContent" OF "StatementDocument" AS blob
+  DESCRIPTION "Always present; 3–32 KB (avg 8 KB). Area PB_Lob_Stmt"
+  FORMAT "x(8)"
+  INITIAL ?
+  LABEL "Pdf Content"
+  POSITION 12
+  LOB-AREA "PB_Lob_Stmt"
+  LOB-BYTES 32768
+  LOB-SIZE 32K
+  COLUMN-LABEL "Pdf Content"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "StatementXml" OF "StatementDocument" AS clob
+  DESCRIPTION "Always present; 1–8 KB (avg 3 KB). Area PB_Lob_Stmt"
+  FORMAT "x(8)"
+  INITIAL ?
+  LABEL "Statement Xml"
+  POSITION 13
+  LOB-AREA "PB_Lob_Stmt"
+  LOB-BYTES 8192
+  LOB-SIZE 8K
+  CLOB-CODEPAGE "UTF-8"
+  CLOB-COLLATION "BASIC"
+  CLOB-TYPE 1
+  COLUMN-LABEL "Statement Xml"
+  ORDER 120
+  MANDATORY
+
+ADD INDEX "PkStatementDocument" ON "StatementDocument"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "StatementDocumentId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "StatementDocument"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "StatementDocumentId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "StatementDocument"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "StatementDocumentId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "StatementDocument"
+  AREA "PB_Master_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "StatementDocumentId" ASCENDING
+
+ADD INDEX "UxAccountStatement" ON "StatementDocument"
+  AREA "PB_Master_Idx"
+  UNIQUE
+  INDEX-FIELD "AccountStatementId" ASCENDING
+
+ADD TABLE "CardAuthorization"
+  AREA "PB_Txn_CardAuth"
+  LABEL "Card Authorization"
+  DESCRIPTION "Card authorization requests"
+  DUMP-NAME "cardauthorization"
+
+ADD FIELD "CardAuthorizationId" OF "CardAuthorization" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqCardAuthorizationId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Card Authorization Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Card Authorization Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "CardAuthorization" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "CardAuthorization" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "CardAuthorization" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "CardAuthorization" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "CardId" OF "CardAuthorization" AS int64
+  DESCRIPTION "Reference to Card"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Card Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Card Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "MerchantId" OF "CardAuthorization" AS int64
+  DESCRIPTION "Reference to Merchant"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Merchant Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Merchant Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "AuthDateTime" OF "CardAuthorization" AS datetime-tz
+  DESCRIPTION "When the authorization was requested (UTC offset kept)"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Auth Date Time"
+  POSITION 9
+  MAX-WIDTH 12
+  COLUMN-LABEL "Auth Date Time"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "MerchantLocalDateTime" OF "CardAuthorization" AS datetime
+  DESCRIPTION "AuthDateTime in the merchant's local zone, stored without an offset"
+  FORMAT "99/99/9999 HH:MM:SS.SSS"
+  INITIAL ?
+  LABEL "Merchant Local Date Time"
+  POSITION 10
+  MAX-WIDTH 8
+  COLUMN-LABEL "Merchant Local Date Time"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "Amount" OF "CardAuthorization" AS decimal
+  DESCRIPTION "Amount authorized, in CurrencyCode"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Amount"
+  POSITION 11
+  MAX-WIDTH 17
+  COLUMN-LABEL "Amount"
+  DECIMALS 2
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "CurrencyCode" OF "CardAuthorization" AS character
+  DESCRIPTION "ISO currency code"
+  FORMAT "x(3)"
+  INITIAL "USD"
+  LABEL "Currency Code"
+  POSITION 12
+  MAX-WIDTH 6
+  COLUMN-LABEL "Currency Code"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "AuthCode" OF "CardAuthorization" AS character
+  DESCRIPTION "Authorization code returned by the issuer"
+  FORMAT "x(6)"
+  INITIAL ""
+  LABEL "Auth Code"
+  POSITION 13
+  MAX-WIDTH 12
+  COLUMN-LABEL "Auth Code"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "ResponseCode" OF "CardAuthorization" AS character
+  DESCRIPTION "00 approved 94%; 05, 51, 54, 61 declined"
+  FORMAT "x(2)"
+  INITIAL "00"
+  LABEL "Response Code"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Response Code"
+  ORDER 130
+  MANDATORY
+
+ADD FIELD "IsApproved" OF "CardAuthorization" AS logical
+  DESCRIPTION "Whether the authorization was approved"
+  FORMAT "yes/no"
+  INITIAL "yes"
+  LABEL "Is Approved"
+  POSITION 15
+  MAX-WIDTH 1
+  COLUMN-LABEL "Is Approved"
+  ORDER 140
+  MANDATORY
+
+ADD FIELD "EntryMode" OF "CardAuthorization" AS character
+  DESCRIPTION "CHIP, SWIP, TAP, ECOM"
+  FORMAT "x(4)"
+  INITIAL "CHIP"
+  LABEL "Entry Mode"
+  POSITION 16
+  MAX-WIDTH 8
+  COLUMN-LABEL "Entry Mode"
+  ORDER 150
+  MANDATORY
+
+ADD FIELD "AuthKind" OF "CardAuthorization" AS character
+  DESCRIPTION "FINAL 56%, PREAUTH 22%, INCREMENT 10%, REVERSAL 12%"
+  FORMAT "x(9)"
+  INITIAL "FINAL"
+  LABEL "Auth Kind"
+  POSITION 17
+  MAX-WIDTH 18
+  COLUMN-LABEL "Auth Kind"
+  ORDER 160
+  MANDATORY
+
+ADD FIELD "DebitTransactionId" OF "CardAuthorization" AS int64
+  DESCRIPTION "Reference to DebitTransaction"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Debit Transaction Id"
+  POSITION 18
+  MAX-WIDTH 8
+  COLUMN-LABEL "Debit Transaction Id"
+  ORDER 170
+  MANDATORY
+
+ADD INDEX "PkCardAuthorization" ON "CardAuthorization"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "CardAuthorizationId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "CardAuthorization"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "CardAuthorizationId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "CardAuthorization"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "CardAuthorizationId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "CardAuthorization"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "CardAuthorizationId" ASCENDING
+
+ADD INDEX "IxCardDate" ON "CardAuthorization"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "CardId" ASCENDING
+  INDEX-FIELD "AuthDateTime" DESCENDING
+
+ADD INDEX "IxMerchantDate" ON "CardAuthorization"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "MerchantId" ASCENDING
+  INDEX-FIELD "AuthDateTime" ASCENDING
+
+ADD TABLE "LoanPayment"
+  AREA "PB_Txn_Large"
+  LABEL "Loan Payment"
+  DESCRIPTION "Payments against a loan"
+  DUMP-NAME "loanpayment"
+
+ADD FIELD "LoanPaymentId" OF "LoanPayment" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqLoanPaymentId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Loan Payment Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Loan Payment Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "LoanPayment" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "LoanPayment" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "LoanPayment" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "LoanPayment" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "LoanId" OF "LoanPayment" AS int64
+  DESCRIPTION "Reference to Loan"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Loan Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "Loan Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "DueDate" OF "LoanPayment" AS date
+  DESCRIPTION "Payment due date"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Due Date"
+  POSITION 8
+  MAX-WIDTH 4
+  COLUMN-LABEL "Due Date"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "PaymentDate" OF "LoanPayment" AS date
+  DESCRIPTION "Date the payment was made"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Payment Date"
+  POSITION 9
+  MAX-WIDTH 4
+  COLUMN-LABEL "Payment Date"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "AmountPaid" OF "LoanPayment" AS decimal
+  DESCRIPTION "Total amount paid"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Amount Paid"
+  POSITION 10
+  MAX-WIDTH 17
+  COLUMN-LABEL "Amount Paid"
+  DECIMALS 2
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "PrincipalPortion" OF "LoanPayment" AS decimal
+  DESCRIPTION "Portion of the payment applied to principal"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Principal Portion"
+  POSITION 11
+  MAX-WIDTH 17
+  COLUMN-LABEL "Principal Portion"
+  DECIMALS 2
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "InterestPortion" OF "LoanPayment" AS decimal
+  DESCRIPTION "Portion of the payment applied to interest"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Interest Portion"
+  POSITION 12
+  MAX-WIDTH 17
+  COLUMN-LABEL "Interest Portion"
+  DECIMALS 2
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "LateFee" OF "LoanPayment" AS decimal
+  DESCRIPTION "Late fee charged"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Late Fee"
+  POSITION 13
+  MAX-WIDTH 17
+  COLUMN-LABEL "Late Fee"
+  DECIMALS 2
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "DebitTransactionId" OF "LoanPayment" AS int64
+  DESCRIPTION "Reference to DebitTransaction"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Debit Transaction Id"
+  POSITION 14
+  MAX-WIDTH 8
+  COLUMN-LABEL "Debit Transaction Id"
+  ORDER 130
+  MANDATORY
+
+ADD INDEX "PkLoanPayment" ON "LoanPayment"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "LoanPaymentId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "LoanPayment"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "LoanPaymentId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "LoanPayment"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "LoanPaymentId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "LoanPayment"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "LoanPaymentId" ASCENDING
+
+ADD INDEX "IxLoanPayment" ON "LoanPayment"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "LoanId" ASCENDING
+  INDEX-FIELD "PaymentDate" DESCENDING
+
+ADD INDEX "IxDueDate" ON "LoanPayment"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "DueDate" ASCENDING
+
+ADD TABLE "Transfer"
+  AREA "PB_Txn_Large"
+  LABEL "Transfer"
+  DESCRIPTION "Movement between two accounts, linking one debit and one credit"
+  DUMP-NAME "transfer"
+
+ADD FIELD "TransferId" OF "Transfer" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqTransferId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Transfer Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Transfer Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "Transfer" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "Transfer" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "Transfer" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "Transfer" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "FromAccountId" OF "Transfer" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "From Account Id"
+  POSITION 7
+  MAX-WIDTH 8
+  COLUMN-LABEL "From Account Id"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "ToAccountId" OF "Transfer" AS int64
+  DESCRIPTION "Reference to Account"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "To Account Id"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "To Account Id"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "Amount" OF "Transfer" AS decimal
+  DESCRIPTION "Amount transferred"
+  FORMAT "->>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Amount"
+  POSITION 9
+  MAX-WIDTH 17
+  COLUMN-LABEL "Amount"
+  DECIMALS 2
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "TransferDateTime" OF "Transfer" AS datetime-tz
+  DESCRIPTION "When the transfer was made"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Transfer Date Time"
+  POSITION 10
+  MAX-WIDTH 12
+  COLUMN-LABEL "Transfer Date Time"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "DebitTransactionId" OF "Transfer" AS int64
+  DESCRIPTION "Reference to DebitTransaction"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Debit Transaction Id"
+  POSITION 11
+  MAX-WIDTH 8
+  COLUMN-LABEL "Debit Transaction Id"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "CreditTransactionId" OF "Transfer" AS int64
+  DESCRIPTION "Reference to CreditTransaction"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Credit Transaction Id"
+  POSITION 12
+  MAX-WIDTH 8
+  COLUMN-LABEL "Credit Transaction Id"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "TransferStatus" OF "Transfer" AS character
+  DESCRIPTION "Lifecycle status"
+  FORMAT "x(10)"
+  INITIAL "POSTED"
+  LABEL "Transfer Status"
+  POSITION 13
+  MAX-WIDTH 20
+  COLUMN-LABEL "Transfer Status"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "Channel" OF "Transfer" AS character
+  DESCRIPTION "ONLINE, MOBILE, BRANCH"
+  FORMAT "x(8)"
+  INITIAL "ONLINE"
+  LABEL "Channel"
+  POSITION 14
+  MAX-WIDTH 16
+  COLUMN-LABEL "Channel"
+  ORDER 130
+  MANDATORY
+
+ADD INDEX "PkTransfer" ON "Transfer"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "TransferId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "Transfer"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "TransferId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "Transfer"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "TransferId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "Transfer"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "TransferId" ASCENDING
+
+ADD INDEX "IxFromAccount" ON "Transfer"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "FromAccountId" ASCENDING
+  INDEX-FIELD "TransferDateTime" ASCENDING
+
+ADD INDEX "IxToAccount" ON "Transfer"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "ToAccountId" ASCENDING
+  INDEX-FIELD "TransferDateTime" ASCENDING
+
+ADD INDEX "UxDebitTransaction" ON "Transfer"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  INDEX-FIELD "DebitTransactionId" ASCENDING
+
+ADD TABLE "AuditLog"
+  AREA "PB_Txn_Audit"
+  LABEL "Audit Log"
+  DESCRIPTION "System change log"
+  DUMP-NAME "auditlog"
+
+ADD FIELD "AuditLogId" OF "AuditLog" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqAuditLogId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Audit Log Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Audit Log Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "AuditLog" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "AuditLog" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "AuditLog" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "AuditLog" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "EventDateTime" OF "AuditLog" AS datetime-tz
+  DESCRIPTION "When the event occurred"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Event Date Time"
+  POSITION 7
+  MAX-WIDTH 12
+  COLUMN-LABEL "Event Date Time"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "TableName" OF "AuditLog" AS character
+  DESCRIPTION "Name of the audited table (weighted toward Account, Customer, Card)"
+  FORMAT "x(32)"
+  INITIAL ""
+  LABEL "Table Name"
+  POSITION 8
+  MAX-WIDTH 64
+  COLUMN-LABEL "Table Name"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "RecordId" OF "AuditLog" AS int64
+  DESCRIPTION "<Table>Id of the audited row"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Record Id"
+  POSITION 9
+  MAX-WIDTH 8
+  COLUMN-LABEL "Record Id"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "AuditAction" OF "AuditLog" AS character
+  DESCRIPTION "C 20%, U 75%, D 5% (named to avoid the SQL reserved word ACTION)"
+  FORMAT "x(1)"
+  INITIAL "U"
+  LABEL "Audit Action"
+  POSITION 10
+  MAX-WIDTH 2
+  COLUMN-LABEL "Audit Action"
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "EmployeeId" OF "AuditLog" AS int64
+  DESCRIPTION "Reference to Employee"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Employee Id"
+  POSITION 11
+  MAX-WIDTH 8
+  COLUMN-LABEL "Employee Id"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "ChangeSummary" OF "AuditLog" AS character
+  DESCRIPTION "e.g. Status: OPEN->DORMANT"
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Change Summary"
+  POSITION 12
+  MAX-WIDTH 120
+  COLUMN-LABEL "Change Summary"
+  ORDER 110
+  MANDATORY
+
+ADD INDEX "PkAuditLog" ON "AuditLog"
+  AREA "PB_Txn_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "AuditLogId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "AuditLog"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "AuditLogId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "AuditLog"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "AuditLogId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "AuditLog"
+  AREA "PB_Txn_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "AuditLogId" ASCENDING
+
+ADD TABLE "BenchmarkTableInfo"
+  AREA "PB_Ref_Data"
+  LABEL "Benchmark Table Info"
+  DESCRIPTION "Row counts and max sequential IDs per table"
+  DUMP-NAME "benchmarktableinfo"
+
+ADD FIELD "BenchmarkTableInfoId" OF "BenchmarkTableInfo" AS int64
+  DESCRIPTION "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(SeqBenchmarkTableInfoId)."
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Benchmark Table Info Id"
+  POSITION 2
+  MAX-WIDTH 8
+  COLUMN-LABEL "Benchmark Table Info Id"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "RandomInt10" OF "BenchmarkTableInfo" AS integer
+  DESCRIPTION "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Random Int 10"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 10"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "RandomInt100" OF "BenchmarkTableInfo" AS integer
+  DESCRIPTION "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Random Int 100"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 100"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "RandomInt1000" OF "BenchmarkTableInfo" AS integer
+  DESCRIPTION "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Random Int 1000"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Random Int 1000"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "CreatedAt" OF "BenchmarkTableInfo" AS datetime-tz
+  DESCRIPTION "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL "now"
+  LABEL "Created At"
+  POSITION 6
+  MAX-WIDTH 12
+  COLUMN-LABEL "Created At"
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "TableName" OF "BenchmarkTableInfo" AS character
+  DESCRIPTION "Exact table name"
+  FORMAT "x(32)"
+  INITIAL ""
+  LABEL "Table Name"
+  POSITION 7
+  MAX-WIDTH 64
+  COLUMN-LABEL "Table Name"
+  ORDER 60
+  MANDATORY
+
+ADD FIELD "TableRowCount" OF "BenchmarkTableInfo" AS int64
+  DESCRIPTION "Rows after the load (named to avoid the reserved/function word ROWCOUNT)"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Table Row Count"
+  POSITION 8
+  MAX-WIDTH 8
+  COLUMN-LABEL "Table Row Count"
+  ORDER 70
+  MANDATORY
+
+ADD FIELD "MaxId" OF "BenchmarkTableInfo" AS int64
+  DESCRIPTION "Highest <Table>Id; equals TableRowCount right after the load"
+  FORMAT ">>>>>>>>>>>9"
+  INITIAL "0"
+  LABEL "Max Id"
+  POSITION 9
+  MAX-WIDTH 8
+  COLUMN-LABEL "Max Id"
+  ORDER 80
+  MANDATORY
+
+ADD FIELD "ScaleFactor" OF "BenchmarkTableInfo" AS decimal
+  DESCRIPTION "Scale factor used for the load"
+  FORMAT ">>9.99"
+  INITIAL "1"
+  LABEL "Scale Factor"
+  POSITION 10
+  MAX-WIDTH 17
+  COLUMN-LABEL "Scale Factor"
+  DECIMALS 2
+  ORDER 90
+  MANDATORY
+
+ADD FIELD "VolumeTier" OF "BenchmarkTableInfo" AS character
+  DESCRIPTION "Tier at scale factor 1"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Volume Tier"
+  POSITION 11
+  MAX-WIDTH 20
+  COLUMN-LABEL "Volume Tier"
+  ORDER 100
+  MANDATORY
+
+ADD FIELD "RecordSizeTier" OF "BenchmarkTableInfo" AS character
+  DESCRIPTION "Record-size tier of the table"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "Record Size Tier"
+  POSITION 12
+  MAX-WIDTH 20
+  COLUMN-LABEL "Record Size Tier"
+  ORDER 110
+  MANDATORY
+
+ADD FIELD "AsOfDate" OF "BenchmarkTableInfo" AS date
+  DESCRIPTION "End of the history window"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "As Of Date"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "As Of Date"
+  ORDER 120
+  MANDATORY
+
+ADD FIELD "LoadedAt" OF "BenchmarkTableInfo" AS datetime-tz
+  DESCRIPTION "When the load finished"
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  LABEL "Loaded At"
+  POSITION 14
+  MAX-WIDTH 12
+  COLUMN-LABEL "Loaded At"
+  ORDER 130
+  MANDATORY
+
+ADD INDEX "PkBenchmarkTableInfo" ON "BenchmarkTableInfo"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "BenchmarkTableInfoId" ASCENDING
+
+ADD INDEX "IxRandomInt10" ON "BenchmarkTableInfo"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt10" ASCENDING
+  INDEX-FIELD "BenchmarkTableInfoId" ASCENDING
+
+ADD INDEX "IxRandomInt100" ON "BenchmarkTableInfo"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt100" ASCENDING
+  INDEX-FIELD "BenchmarkTableInfoId" ASCENDING
+
+ADD INDEX "IxRandomInt1000" ON "BenchmarkTableInfo"
+  AREA "PB_Ref_Idx"
+  INDEX-FIELD "RandomInt1000" ASCENDING
+  INDEX-FIELD "BenchmarkTableInfoId" ASCENDING
+
+ADD INDEX "UxTableName" ON "BenchmarkTableInfo"
+  AREA "PB_Ref_Idx"
+  UNIQUE
+  INDEX-FIELD "TableName" ASCENDING
+
+.
+PSC
+cpstream=UTF-8
+.
+0000162511

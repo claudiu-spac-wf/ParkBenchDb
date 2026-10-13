@@ -1,0 +1,10 @@
+tables=32
+fields=479
+indexes=198
+sequences=32
+codepage=UTF-8
+largefiles=yes
+blocksize=8192
+biblocksize=16384
+biclustersize=16777216
+table-list=Account,AccountHolder,AccountStatement,AccountType,AuditLog,BenchmarkTableInfo,Branch,Card,CardAuthorization,Country,CreditTransaction,Currency,Customer,CustomerAddress,CustomerContact,CustomerDocument,CustomerNote,DebitTransaction,Employee,ExchangeRate,InterestRateHistory,Loan,LoanPayment,LoginEvent,Merchant,MerchantCategory,MonthlyBalance,Payee,ScheduledPayment,StatementDocument,TransactionType,Transfer

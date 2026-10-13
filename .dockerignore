@@ -1,0 +1,15 @@
+.git/
+.venv/
+.venv-win/
+__pycache__/
+*.pyc
+*.log
+.env*
+ParkBench/.env.local
+pbgen-spool/
+pbwork-spool/
+pbwork-runs/
+data/
+tests/
+docs/
+specs/

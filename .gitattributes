@@ -1,0 +1,6 @@
+*.sh text eol=lf
+*.df text eol=lf
+*.st text eol=lf
+*.expect text eol=lf
+*.p text eol=lf
+*.bat text eol=crlf

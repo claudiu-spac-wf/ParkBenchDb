@@ -1,0 +1,3426 @@
+# ParkBenchDB schema source — the single source of truth.
+# Format: specs/001-banking-benchmark-schema/contracts/schema-source-format.md
+# Design:  specs/001-banking-benchmark-schema/data-model.md
+# Generated docs (docs/schema/) are produced from this file by tools/gen_docs.py; never edit them by hand.
+
+schema:
+  name: ParkBenchDB
+  target: "OpenEdge 12.8"
+  blockSizeBytes: 8192
+  asOfDateRule: "last day of the month before the load"
+  historyMonths: 12
+
+# Injected at the start of every table, in this order ({Table} = table name). data-model.md §1.1
+standardFields:
+  - name: "{Table}Id"
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(Seq{Table}Id)."
+    gen: "Assigned 1..N in load order"
+  - name: RandomInt10
+    type: INTEGER
+    format: ">9"
+    mandatory: true
+    initial: "0"
+    description: "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+    gen: "Independent uniform 1–10; 0 = unassigned (invalid)"
+  - name: RandomInt100
+    type: INTEGER
+    format: ">>9"
+    mandatory: true
+    initial: "0"
+    description: "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+    gen: "Independent uniform 1–100; 0 = unassigned (invalid)"
+  - name: RandomInt1000
+    type: INTEGER
+    format: ">>>9"
+    mandatory: true
+    initial: "0"
+    description: "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+    gen: "Independent uniform 1–1000; 0 = unassigned (invalid)"
+  - name: CreatedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "NOW"
+    description: "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+    gen: "Consistent with the row's business date; NOW for runtime inserts"
+
+# Appended as the last field of every class M (master) table.
+masterFields:
+  - name: UpdatedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "NOW"
+    description: "Last modification time; equals CreatedAt right after the load."
+    gen: "Equal to CreatedAt at load"
+
+# Injected at the start of every table's index list. data-model.md §1.2
+standardIndexes:
+  - name: "Pk{Table}"
+    primary: true
+    unique: true
+    purpose: "Single-row random access by sequential ID; default scan order"
+    components:
+      - { field: "{Table}Id", order: asc }
+  - name: IxRandomInt10
+    unique: false
+    purpose: "Select ≈ 10% of rows (RandomInt10 = k)"
+    components:
+      - { field: RandomInt10, order: asc }
+      - { field: "{Table}Id", order: asc }
+  - name: IxRandomInt100
+    unique: false
+    purpose: "Select ≈ 1% of rows (RandomInt100 = k)"
+    components:
+      - { field: RandomInt100, order: asc }
+      - { field: "{Table}Id", order: asc }
+  - name: IxRandomInt1000
+    unique: false
+    purpose: "Select ≈ 0.1% of rows (RandomInt1000 = k)"
+    components:
+      - { field: RandomInt1000, order: asc }
+      - { field: "{Table}Id", order: asc }
+
+# Storage areas (Type II, 8 KB blocks). research.md R9
+areas:
+  - { name: PB_Ref_Data, kind: data, recordsPerBlock: 64, blocksPerCluster: 8, description: "All Tiny and Small tables (exempt from the RPB formula; waste is negligible under 100k rows)" }
+  - { name: PB_Master_Narrow, kind: data, recordsPerBlock: 32, blocksPerCluster: 64, description: "Medium Narrow tables" }
+  - { name: PB_Master_Std, kind: data, recordsPerBlock: 16, blocksPerCluster: 64, description: "Medium Standard and LOB-bearing tables" }
+  - { name: PB_Master_Wide, kind: data, recordsPerBlock: 8, blocksPerCluster: 64, description: "Medium Wide tables" }
+  - { name: PB_Txn_Debit, kind: data, recordsPerBlock: 32, blocksPerCluster: 512, description: "DebitTransaction (Very Large) in its own area" }
+  - { name: PB_Txn_CardAuth, kind: data, recordsPerBlock: 64, blocksPerCluster: 512, description: "CardAuthorization (Very Large) in its own area" }
+  - { name: PB_Txn_Audit, kind: data, recordsPerBlock: 32, blocksPerCluster: 512, description: "AuditLog (Very Large) in its own area" }
+  - { name: PB_Txn_Large, kind: data, recordsPerBlock: 32, blocksPerCluster: 512, description: "Large transactional tables" }
+  - { name: PB_Ref_Idx, kind: index, blocksPerCluster: 8, description: "Indexes of PB_Ref_Data tables" }
+  - { name: PB_Master_Idx, kind: index, blocksPerCluster: 64, description: "Indexes of Medium tables" }
+  - { name: PB_Txn_Idx, kind: index, blocksPerCluster: 512, description: "Indexes of Large and Very Large tables" }
+  - { name: PB_Lob_Doc, kind: lob, blocksPerCluster: 512, description: "Binary documents and images (Employee.Photo, CustomerDocument.Content)" }
+  - { name: PB_Lob_Stmt, kind: lob, blocksPerCluster: 512, description: "Rendered statements (StatementDocument.PdfContent, StatementDocument.StatementXml)" }
+  - { name: PB_Lob_Text, kind: lob, blocksPerCluster: 512, description: "Long text (CustomerNote.NoteText, AccountStatement.NoticeText)" }
+
+tables:
+- name: Currency
+  description: ISO currencies
+  class: R
+  rows: 40
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 70
+  notes: "ISO 4217 currencies. Gen: the 40 most-traded currencies; USD is CurrencyId 1."
+  fields:
+  - name: CurrencyCode
+    type: CHARACTER
+    format: x(3)
+    mandatory: true
+    initial: ""
+    description: ISO currency code
+    gen: ISO alpha code, e.g. USD
+  - name: CurrencyName
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: Currency name
+    gen: e.g. US Dollar
+  - name: NumericCode
+    type: INTEGER
+    format: "999"
+    mandatory: true
+    initial: "0"
+    description: ISO numeric code
+    gen: ISO numeric code
+  - name: MinorUnits
+    type: INTEGER
+    format: "9"
+    mandatory: true
+    initial: "2"
+    description: Decimal places used by the currency
+    gen: Decimal places (0, 2 or 3)
+  - name: CurrencySymbol
+    type: CHARACTER
+    format: x(5)
+    mandatory: false
+    initial: ""
+    description: Currency symbol
+    gen: e.g. $
+  - name: IsActive
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "yes"
+    description: Whether the row is active
+    gen: 95% yes
+  indexes:
+  - name: UxCurrencyCode
+    unique: true
+    word: false
+    purpose: Lookup by code; target of character FKs
+    components:
+    - field: CurrencyCode
+      order: asc
+- name: Country
+  description: ISO countries with default currency
+  class: R
+  rows: 250
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 80
+  fields:
+  - name: CountryCode
+    type: CHARACTER
+    format: x(2)
+    mandatory: true
+    initial: ""
+    description: ISO country code
+    gen: ISO 3166 alpha-2
+  - name: CountryName
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Country name
+    gen: default (data-model §1.5)
+  - name: DefaultCurrencyCode
+    type: CHARACTER
+    format: x(3)
+    mandatory: true
+    initial: ""
+    description: Reference to Currency
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Currency
+      field: CurrencyCode
+      cardinality: 6 / 1–60
+  - name: PhonePrefix
+    type: CHARACTER
+    format: x(6)
+    mandatory: false
+    initial: ""
+    description: International dialling prefix
+    gen: e.g. +1
+  indexes:
+  - name: UxCountryCode
+    unique: true
+    word: false
+    purpose: Lookup by code
+    components:
+    - field: CountryCode
+      order: asc
+  - name: IxDefaultCurrency
+    unique: false
+    word: false
+    purpose: Countries using a currency
+    components:
+    - field: DefaultCurrencyCode
+      order: asc
+- name: ExchangeRate
+  description: Daily rate between two currencies
+  class: R
+  rows: 14235
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 70
+  notes: Daily rate from each non-USD currency to USD, over the 12-month history window.
+  fields:
+  - name: RateDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date the rate applies to
+    gen: Each day in the window
+  - name: FromCurrencyCode
+    type: CHARACTER
+    format: x(3)
+    mandatory: true
+    initial: ""
+    description: Reference to Currency
+    gen: every currency except USD
+    fk:
+      table: Currency
+      field: CurrencyCode
+      cardinality: 356 / 0–365 (USD has 0)
+  - name: ToCurrencyCode
+    type: CHARACTER
+    format: x(3)
+    mandatory: true
+    initial: ""
+    description: Reference to Currency
+    gen: always USD
+    fk:
+      table: Currency
+      field: CurrencyCode
+      indexed: false
+      reason: Always USD; second component of UxCurrencyPairDate
+      cardinality: 356 / 0–14,235 (all rows reference USD)
+  - name: Rate
+    type: DECIMAL
+    format: ">>>>>9.99999999"
+    decimals: 8
+    mandatory: true
+    initial: "0"
+    description: Exchange rate
+    gen: Random walk ±0.5% per day from a realistic seed value
+  - name: RateSource
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Source of the rate
+    gen: ECB, FED, INTERNAL
+  indexes:
+  - name: UxCurrencyPairDate
+    unique: true
+    word: false
+    purpose: Latest rate for a pair
+    components:
+    - field: FromCurrencyCode
+      order: asc
+    - field: ToCurrencyCode
+      order: asc
+    - field: RateDate
+      order: desc
+- name: Branch
+  description: Physical bank branch
+  class: R
+  rows: 250
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 300
+  fields:
+  - name: BranchCode
+    type: CHARACTER
+    format: x(6)
+    mandatory: true
+    initial: ""
+    description: Branch business key
+    gen: B + 5 digits
+  - name: BranchName
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Branch name
+    gen: City + suffix (Main St, Downtown, …)
+  - name: AddressLine1
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: First address line
+    gen: default (data-model §1.5)
+  - name: City
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: City name
+    gen: default (data-model §1.5)
+  - name: StateProvince
+    type: CHARACTER
+    format: x(30)
+    mandatory: true
+    initial: ""
+    description: State or province
+    gen: default (data-model §1.5)
+  - name: PostalCode
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Postal / ZIP code
+    gen: default (data-model §1.5)
+  - name: CountryCode
+    type: CHARACTER
+    format: x(2)
+    mandatory: true
+    initial: ""
+    description: ISO country code
+    gen: 90% US
+    fk:
+      table: Country
+      field: CountryCode
+      cardinality: 1 / 0–225 (US 90%)
+  - name: Phone
+    type: CHARACTER
+    format: x(20)
+    mandatory: true
+    initial: ""
+    description: Telephone number
+    gen: default (data-model §1.5)
+  - name: OpenDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date opened
+    gen: 1950–2024
+  - name: IsActive
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "yes"
+    description: Whether the row is active
+    gen: 96% yes
+  indexes:
+  - name: UxBranchCode
+    unique: true
+    word: false
+    purpose: Lookup by code
+    components:
+    - field: BranchCode
+      order: asc
+  - name: IxCountryCity
+    unique: false
+    word: false
+    purpose: Branch locator
+    components:
+    - field: CountryCode
+      order: asc
+    - field: City
+      order: asc
+- name: Employee
+  description: Bank staff
+  class: M
+  rows: 5000
+  scaling: linear
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 330
+  fields:
+  - name: EmployeeNumber
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Employee business key
+    gen: E + 7 digits
+  - name: BranchId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Branch
+    gen: 15% at the head-office branch (BranchId 1)
+    fk:
+      table: Branch
+      cardinality: 20 / 5–750 (head office ≈ 750)
+  - name: FirstName
+    type: CHARACTER
+    format: x(30)
+    mandatory: true
+    initial: ""
+    description: Given name
+    gen: default (data-model §1.5)
+  - name: LastName
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: Family name
+    gen: default (data-model §1.5)
+  - name: JobTitle
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: Job title
+    gen: Teller, Banker, Loan Officer, Manager, Analyst…
+  - name: Email
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Email address
+    gen: default (data-model §1.5)
+  - name: HireDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date the employee was hired
+    gen: default (data-model §1.5)
+  - name: TerminationDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Date employment ended
+    gen: Set for 8% of rows
+  - name: IsBranchManager
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Whether the employee manages their branch
+    gen: Exactly one yes per branch
+  - name: Salary
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Annual salary
+    gen: 35,000–250,000
+  - name: Photo
+    type: BLOB
+    mandatory: false
+    initial: "?"
+    description: JPEG, 8–48 KB (avg 24 KB); present on 80% of rows. Area PB_Lob_Doc
+    gen: JPEG, 8–48 KB (avg 24 KB); present on 80% of rows. Area PB_Lob_Doc
+    lob:
+      area: PB_Lob_Doc
+      maxSize: 64K
+      content: JPEG
+      fractionPopulated: 0.8
+      avgBytes: 24576
+      minBytes: 8192
+      maxBytes: 49152
+  indexes:
+  - name: UxEmployeeNumber
+    unique: true
+    word: false
+    purpose: Lookup
+    components:
+    - field: EmployeeNumber
+      order: asc
+  - name: IxBranch
+    unique: false
+    word: false
+    purpose: Staff per branch
+    components:
+    - field: BranchId
+      order: asc
+    - field: LastName
+      order: asc
+  - name: IxName
+    unique: false
+    word: false
+    purpose: Name search
+    components:
+    - field: LastName
+      order: asc
+    - field: FirstName
+      order: asc
+- name: AccountType
+  description: Product definitions (checking, savings, CD…)
+  class: R
+  rows: 24
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 1500
+  fields:
+  - name: AccountTypeCode
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: e.g. CHKBASIC, SAVHIYLD, CD12M
+    gen: e.g. CHKBASIC, SAVHIYLD, CD12M
+  - name: AccountTypeName
+    type: CHARACTER
+    format: x(50)
+    mandatory: true
+    initial: ""
+    description: Product name
+    gen: default (data-model §1.5)
+  - name: Category
+    type: CHARACTER
+    format: x(12)
+    mandatory: true
+    initial: ""
+    description: CHECKING, SAVINGS, MONEYMARKET, CD
+    gen: CHECKING, SAVINGS, MONEYMARKET, CD
+  - name: Description
+    type: CHARACTER
+    format: x(200)
+    mandatory: true
+    initial: ""
+    description: Human-readable description
+    gen: default (data-model §1.5)
+  - name: TermsText
+    type: CHARACTER
+    format: x(1200)
+    mandatory: true
+    initial: ""
+    description: Plain-text terms, 900–1,200 characters (makes the record Wide without a LOB)
+    gen: Plain-text terms, 900–1,200 characters (makes the record Wide without a LOB)
+  - name: MinimumBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Minimum balance
+    gen: default (data-model §1.5)
+  - name: MonthlyFee
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Monthly maintenance fee
+    gen: default (data-model §1.5)
+  - name: OverdraftAllowed
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Whether overdraft is allowed
+    gen: default (data-model §1.5)
+  - name: TermMonths
+    type: INTEGER
+    format: ">>9"
+    mandatory: true
+    initial: "0"
+    description: Term in months
+    gen: 0 unless CD (3–60)
+  - name: CurrentInterestRate
+    type: DECIMAL
+    format: ">>9.9999"
+    decimals: 4
+    mandatory: true
+    initial: "0"
+    description: Equals the latest InterestRateHistory row
+    gen: Equals the latest InterestRateHistory row
+  - name: IsActive
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "yes"
+    description: Whether the row is active
+    gen: default (data-model §1.5)
+  indexes:
+  - name: UxAccountTypeCode
+    unique: true
+    word: false
+    purpose: Lookup
+    components:
+    - field: AccountTypeCode
+      order: asc
+  - name: IxCategory
+    unique: false
+    word: false
+    purpose: Products by category
+    components:
+    - field: Category
+      order: asc
+- name: InterestRateHistory
+  description: Rate changes per account type over time
+  class: R
+  rows: 2880
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 60
+  fields:
+  - name: AccountTypeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to AccountType
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: AccountType
+      cardinality: 120 / 120–120
+  - name: EffectiveDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date the rate took effect
+    gen: First of each month, for 10 years
+  - name: InterestRate
+    type: DECIMAL
+    format: ">>9.9999"
+    decimals: 4
+    mandatory: true
+    initial: "0"
+    description: Annual interest rate (%)
+    gen: 0.0000–6.0000
+  - name: ChangedByEmployeeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Employee
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Employee
+      indexed: false
+      reason: Audit-only reference
+      cardinality: 0.6 / 0–10
+  indexes:
+  - name: UxTypeEffective
+    unique: true
+    word: false
+    purpose: Rate in effect on a date
+    components:
+    - field: AccountTypeId
+      order: asc
+    - field: EffectiveDate
+      order: desc
+- name: TransactionType
+  description: Codes for debit/credit kinds (ATM, POS, ACH, fee…)
+  class: R
+  rows: 60
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 110
+  fields:
+  - name: TransactionTypeCode
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: ""
+    description: e.g. POS, ATMWD, ACHCR, FEEMNT
+    gen: e.g. POS, ATMWD, ACHCR, FEEMNT
+  - name: Description
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Human-readable description
+    gen: default (data-model §1.5)
+  - name: Direction
+    type: CHARACTER
+    format: x(1)
+    mandatory: true
+    initial: ""
+    description: D debit, C credit
+    gen: D debit, C credit
+  - name: Channel
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: ATM, POS, ACH, WIRE, BRANCH, ONLINE, INTERNAL
+    gen: ATM, POS, ACH, WIRE, BRANCH, ONLINE, INTERNAL
+  - name: IsFee
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Whether this type is a fee
+    gen: default (data-model §1.5)
+  indexes:
+  - name: UxTransactionTypeCode
+    unique: true
+    word: false
+    purpose: Lookup
+    components:
+    - field: TransactionTypeCode
+      order: asc
+  - name: IxDirectionChannel
+    unique: false
+    word: false
+    purpose: Types by direction
+    components:
+    - field: Direction
+      order: asc
+    - field: Channel
+      order: asc
+- name: MerchantCategory
+  description: Merchant category codes
+  class: R
+  rows: 600
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 110
+  fields:
+  - name: MccCode
+    type: CHARACTER
+    format: x(4)
+    mandatory: true
+    initial: ""
+    description: Merchant category code
+    gen: 4-digit merchant category code
+  - name: Description
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Human-readable description
+    gen: default (data-model §1.5)
+  - name: CategoryGroup
+    type: CHARACTER
+    format: x(30)
+    mandatory: true
+    initial: ""
+    description: Merchant category group
+    gen: ~20 groups (Grocery, Travel, Fuel…)
+  indexes:
+  - name: UxMccCode
+    unique: true
+    word: false
+    purpose: Lookup
+    components:
+    - field: MccCode
+      order: asc
+- name: Merchant
+  description: Businesses where cards are used
+  class: M
+  rows: 80000
+  scaling: linear
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 300
+  fields:
+  - name: MerchantNumber
+    type: CHARACTER
+    format: x(15)
+    mandatory: true
+    initial: ""
+    description: Merchant business key
+    gen: M + 14 digits
+  - name: MerchantName
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Merchant trading name
+    gen: 2–5 words from a business-name word list (feeds the word index)
+  - name: MerchantCategoryId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to MerchantCategory
+    gen: Zipf-skewed
+    fk:
+      table: MerchantCategory
+      cardinality: 133 / 0–2,000 (skewed)
+  - name: City
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: City name
+    gen: default (data-model §1.5)
+  - name: StateProvince
+    type: CHARACTER
+    format: x(30)
+    mandatory: true
+    initial: ""
+    description: State or province
+    gen: default (data-model §1.5)
+  - name: PostalCode
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Postal / ZIP code
+    gen: default (data-model §1.5)
+  - name: CountryCode
+    type: CHARACTER
+    format: x(2)
+    mandatory: true
+    initial: ""
+    description: ISO country code
+    gen: 85% US
+    fk:
+      table: Country
+      field: CountryCode
+      cardinality: 320 / 0–68,000 (US 85%)
+  - name: Latitude
+    type: DECIMAL
+    format: "->>9.999999"
+    decimals: 6
+    mandatory: true
+    initial: "0"
+    description: Latitude (WGS84)
+    gen: default (data-model §1.5)
+  - name: Longitude
+    type: DECIMAL
+    format: "->>9.999999"
+    decimals: 6
+    mandatory: true
+    initial: "0"
+    description: Longitude (WGS84)
+    gen: default (data-model §1.5)
+  - name: IsOnline
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Online-only merchant
+    gen: 25% yes
+  - name: RiskScore
+    type: INTEGER
+    format: ">>9"
+    mandatory: true
+    initial: "0"
+    description: Merchant risk score
+    gen: 0–100, normal around 20
+  indexes:
+  - name: UxMerchantNumber
+    unique: true
+    word: false
+    purpose: Lookup
+    components:
+    - field: MerchantNumber
+      order: asc
+  - name: IxCategory
+    unique: false
+    word: false
+    purpose: Merchants per MCC
+    components:
+    - field: MerchantCategoryId
+      order: asc
+  - name: IxCountryCity
+    unique: false
+    word: false
+    purpose: Geographic
+    components:
+    - field: CountryCode
+      order: asc
+    - field: City
+      order: asc
+  - name: WxMerchantName
+    unique: false
+    word: true
+    purpose: CONTAINS search
+    components:
+    - field: MerchantName
+      order: asc
+- name: Customer
+  description: Individual or business bank customer
+  class: M
+  rows: 1000000
+  scaling: linear
+  area: PB_Master_Wide
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 850
+  fields:
+  - name: CustomerNumber
+    type: CHARACTER
+    format: x(12)
+    mandatory: true
+    initial: ""
+    description: C + 10 digits (random, unique; not the ID)
+    gen: C + 10 digits (random, unique; not the ID)
+  - name: CustomerKind
+    type: CHARACTER
+    format: x(1)
+    mandatory: true
+    initial: ""
+    description: I individual 92%, B business 8%
+    gen: I individual 92%, B business 8%
+  - name: FirstName
+    type: CHARACTER
+    format: x(30)
+    mandatory: true
+    initial: ""
+    description: Given name
+    gen: Empty for businesses
+  - name: MiddleName
+    type: CHARACTER
+    format: x(30)
+    mandatory: true
+    initial: ""
+    description: Middle name
+    gen: 40% populated
+  - name: LastName
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: Family name
+    gen: "Business: primary contact's last name"
+  - name: BusinessName
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Registered business name
+    gen: Businesses only
+  - name: DateOfBirth
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Date of birth
+    gen: Individuals, age 18–95
+  - name: TaxIdMasked
+    type: CHARACTER
+    format: x(11)
+    mandatory: true
+    initial: ""
+    description: Masked tax identifier
+    gen: "***-**-1234"
+  - name: Email
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Email address
+    gen: default (data-model §1.5)
+  - name: PreferredLanguage
+    type: CHARACTER
+    format: x(5)
+    mandatory: true
+    initial: en
+    description: en 85%, es 12%, other 3%
+    gen: en 85%, es 12%, other 3%
+  - name: HomeBranchId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Branch
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Branch
+      cardinality: 4,000 / 500–15,000
+  - name: Segment
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: RETAIL
+    description: RETAIL 80%, PREMIER 12%, PRIVATE 2%, SMB 6%
+    gen: RETAIL 80%, PREMIER 12%, PRIVATE 2%, SMB 6%
+  - name: CreditScore
+    type: INTEGER
+    format: ">>9"
+    mandatory: true
+    initial: "0"
+    description: 300–850, normal around 700
+    gen: 300–850, normal around 700
+  - name: AnnualIncome
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Reported annual income
+    gen: Log-normal
+  - name: CustomerSince
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date the customer relationship began
+    gen: 1980 – as-of date
+  - name: CustomerStatus
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ACTIVE
+    description: Lifecycle status
+    gen: ACTIVE 90%, DORMANT 7%, CLOSED 3%
+  - name: IsPaperless
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Receives statements electronically
+    gen: 55% yes
+  - name: MarketingOptIn
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Consented to marketing
+    gen: 35% yes
+  - name: KycVerifiedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: false
+    initial: "?"
+    description: When identity (KYC) was verified
+    gen: 98% set
+  - name: RiskRating
+    type: CHARACTER
+    format: x(1)
+    mandatory: true
+    initial: L
+    description: AML risk rating
+    gen: L/M/H 80/17/3%
+  - name: Occupation
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: Customer occupation
+    gen: default (data-model §1.5)
+  - name: EmployerName
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Customer employer
+    gen: default (data-model §1.5)
+  - name: SecurityQuestion
+    type: CHARACTER
+    format: x(100)
+    mandatory: true
+    initial: ""
+    description: One of 10 questions
+    gen: One of 10 questions
+  - name: Preferences
+    type: CHARACTER
+    format: x(300)
+    mandatory: true
+    initial: ""
+    description: key=value; list, 150–300 characters (width filler)
+    gen: key=value; list, 150–300 characters (width filler)
+  - name: LastContactDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Date of the last contact with the customer
+    gen: default (data-model §1.5)
+  indexes:
+  - name: UxCustomerNumber
+    unique: true
+    word: false
+    purpose: Lookup by business key
+    components:
+    - field: CustomerNumber
+      order: asc
+  - name: IxName
+    unique: false
+    word: false
+    purpose: Name search, range scans
+    components:
+    - field: LastName
+      order: asc
+    - field: FirstName
+      order: asc
+  - name: IxHomeBranch
+    unique: false
+    word: false
+    purpose: Customers per branch
+    components:
+    - field: HomeBranchId
+      order: asc
+  - name: IxStatusSegment
+    unique: false
+    word: false
+    purpose: Low-cardinality index (a known anti-pattern worth benchmarking)
+    components:
+    - field: CustomerStatus
+      order: asc
+    - field: Segment
+      order: asc
+  - name: IxEmail
+    unique: false
+    word: false
+    purpose: Login lookup
+    components:
+    - field: Email
+      order: asc
+- name: CustomerAddress
+  description: Postal addresses (home, mailing, work)
+  class: M
+  rows: 1500000
+  scaling: linear
+  area: PB_Master_Std
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 220
+  fields:
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Customer
+      cardinality: 1.5 / 1–3
+  - name: AddressKind
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: HOME
+    description: Kind of address
+    gen: HOME, MAILING, WORK
+  - name: AddressLine1
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: First address line
+    gen: default (data-model §1.5)
+  - name: AddressLine2
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Second address line (apartment, suite)
+    gen: 20% populated
+  - name: City
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: City name
+    gen: default (data-model §1.5)
+  - name: StateProvince
+    type: CHARACTER
+    format: x(30)
+    mandatory: true
+    initial: ""
+    description: State or province
+    gen: default (data-model §1.5)
+  - name: PostalCode
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Postal / ZIP code
+    gen: default (data-model §1.5)
+  - name: CountryCode
+    type: CHARACTER
+    format: x(2)
+    mandatory: true
+    initial: US
+    description: ISO country code
+    gen: 95% US
+    fk:
+      table: Country
+      field: CountryCode
+      cardinality: 6,000 / 0–1,425,000 (US 95%)
+  - name: IsPrimary
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Primary entry of its kind for the customer
+    gen: Exactly one per customer
+  - name: ValidFrom
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: First date the address is valid
+    gen: default (data-model §1.5)
+  - name: ValidTo
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Last date the address is valid
+    gen: Unknown = current; 10% past addresses
+  indexes:
+  - name: IxCustomer
+    unique: false
+    word: false
+    purpose: A customer's addresses
+    components:
+    - field: CustomerId
+      order: asc
+    - field: AddressKind
+      order: asc
+  - name: IxCountryPostal
+    unique: false
+    word: false
+    purpose: Geographic range scans
+    components:
+    - field: CountryCode
+      order: asc
+    - field: PostalCode
+      order: asc
+- name: CustomerContact
+  description: Phone numbers and emails
+  class: M
+  rows: 2500000
+  scaling: linear
+  area: PB_Master_Narrow
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 110
+  fields:
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Customer
+      cardinality: 2.5 / 1–5
+  - name: ContactKind
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: ""
+    description: Kind of contact
+    gen: MOBILE, HOME, WORK, EMAIL
+  - name: ContactValue
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Phone number or email address
+    gen: Phone number or email
+  - name: IsPrimary
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Primary entry of its kind for the customer
+    gen: default (data-model §1.5)
+  - name: IsVerified
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Whether the contact has been verified
+    gen: 85% yes
+  - name: VerifiedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: false
+    initial: "?"
+    description: When the contact was verified
+    gen: Set when verified
+  indexes:
+  - name: IxCustomer
+    unique: false
+    word: false
+    purpose: A customer's contacts
+    components:
+    - field: CustomerId
+      order: asc
+    - field: ContactKind
+      order: asc
+  - name: IxContactValue
+    unique: false
+    word: false
+    purpose: Reverse lookup (caller ID, email)
+    components:
+    - field: ContactValue
+      order: asc
+- name: CustomerDocument
+  description: Identity documents and scans
+  class: M
+  rows: 1000000
+  scaling: linear
+  area: PB_Master_Std
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 200
+  fields:
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Customer
+      cardinality: 1.0 / 0–3
+  - name: DocumentKind
+    type: CHARACTER
+    format: x(12)
+    mandatory: true
+    initial: ""
+    description: PASSPORT, DRIVERLIC, UTILITYBILL, TAXFORM, OTHER
+    gen: PASSPORT, DRIVERLIC, UTILITYBILL, TAXFORM, OTHER
+  - name: DocumentNumberMasked
+    type: CHARACTER
+    format: x(20)
+    mandatory: true
+    initial: ""
+    description: Masked document number
+    gen: default (data-model §1.5)
+  - name: IssuingCountryCode
+    type: CHARACTER
+    format: x(2)
+    mandatory: true
+    initial: US
+    description: Country that issued the document
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Country
+      field: CountryCode
+      indexed: false
+      reason: Lookup to Country only
+      cardinality: 4,000 / 0–950,000 (US 95%)
+  - name: IssueDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Date issued
+    gen: default (data-model §1.5)
+  - name: ExpiryDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Document expiry date
+    gen: Passports/licences only; 5% expired
+  - name: VerificationStatus
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: PENDING
+    description: Verification status
+    gen: VERIFIED 90%, PENDING 7%, REJECTED 3%
+  - name: VerifiedByEmployeeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Employee
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Employee
+      indexed: false
+      reason: Lookup to Employee only
+      cardinality: 200 / 0–1,000
+  - name: MimeType
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: MIME type of the stored content
+    gen: image/jpeg, image/png, application/pdf
+  - name: FileName
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Original file name
+    gen: default (data-model §1.5)
+  - name: FileSizeBytes
+    type: INT64
+    format: ">>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Equals the Content length; 0 when absent
+    gen: Equals the Content length; 0 when absent
+  - name: Content
+    type: BLOB
+    mandatory: false
+    initial: "?"
+    description: Present on 10% of rows; 4–64 KB (avg 16 KB). Area PB_Lob_Doc
+    gen: Present on 10% of rows; 4–64 KB (avg 16 KB). Area PB_Lob_Doc
+    lob:
+      area: PB_Lob_Doc
+      maxSize: 64K
+      content: JPEG/PNG/PDF
+      fractionPopulated: 0.1
+      avgBytes: 16384
+      minBytes: 4096
+      maxBytes: 65536
+  indexes:
+  - name: IxCustomer
+    unique: false
+    word: false
+    purpose: A customer's documents
+    components:
+    - field: CustomerId
+      order: asc
+    - field: DocumentKind
+      order: asc
+  - name: IxExpiry
+    unique: false
+    word: false
+    purpose: Expiring-document batch job
+    components:
+    - field: ExpiryDate
+      order: asc
+- name: CustomerNote
+  description: Free-text notes and support interactions
+  class: T
+  rows: 1500000
+  scaling: linear
+  area: PB_Master_Std
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 380
+  fields:
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: Zipf-skewed (a few customers have many notes)
+    fk:
+      table: Customer
+      cardinality: 1.5 / 0–20 (Zipf)
+  - name: EmployeeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Employee
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Employee
+      cardinality: 300 / 0–2,000
+  - name: NoteKind
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Kind of note
+    gen: CALL, EMAIL, BRANCH, COMPLAINT, SYSTEM
+  - name: NoteDateTime
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: When the note was written
+    gen: Within the last 5 years
+  - name: Summary
+    type: CHARACTER
+    format: x(300)
+    mandatory: true
+    initial: ""
+    description: 80–300 characters of generated banking vocabulary (word-indexed)
+    gen: 80–300 characters of generated banking vocabulary (word-indexed)
+  - name: NoteText
+    type: CLOB
+    mandatory: false
+    initial: "?"
+    description: Present on 60%; 200 B–8 KB (avg 1.2 KB). Area PB_Lob_Text
+    gen: Present on 60%; 200 B–8 KB (avg 1.2 KB). Area PB_Lob_Text
+    lob:
+      area: PB_Lob_Text
+      maxSize: 8K
+      codepage: UTF-8
+      content: free text
+      fractionPopulated: 0.6
+      avgBytes: 1200
+      minBytes: 200
+      maxBytes: 8192
+  - name: FollowUpDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Follow-up date
+    gen: 15% set
+  - name: IsResolved
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Whether the note is resolved
+    gen: 85% yes
+  indexes:
+  - name: IxCustomerDate
+    unique: false
+    word: false
+    purpose: Newest notes first
+    components:
+    - field: CustomerId
+      order: asc
+    - field: NoteDateTime
+      order: desc
+  - name: IxEmployeeDate
+    unique: false
+    word: false
+    purpose: Employee activity
+    components:
+    - field: EmployeeId
+      order: asc
+    - field: NoteDateTime
+      order: asc
+  - name: WxSummary
+    unique: false
+    word: true
+    purpose: Full-text search
+    components:
+    - field: Summary
+      order: asc
+- name: Account
+  description: A deposit account
+  class: M
+  rows: 1500000
+  scaling: linear
+  area: PB_Master_Std
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 300
+  fields:
+  - name: AccountNumber
+    type: CHARACTER
+    format: x(14)
+    mandatory: true
+    initial: ""
+    description: 12 random digits + 2 check digits
+    gen: 12 random digits + 2 check digits
+  - name: AccountTypeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to AccountType
+    gen: CHECKING 55%, SAVINGS 35%, other 10%
+    fk:
+      table: AccountType
+      cardinality: 62,500 / 1,000–450,000 (skewed)
+  - name: BranchId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Branch
+    gen: usually the primary holder's home branch
+    fk:
+      table: Branch
+      cardinality: 6,000 / 750–22,500
+  - name: CurrencyCode
+    type: CHARACTER
+    format: x(3)
+    mandatory: true
+    initial: USD
+    description: ISO currency code
+    gen: 97% USD
+    fk:
+      table: Currency
+      field: CurrencyCode
+      cardinality: 37,500 / 0–1,455,000 (USD 97%)
+  - name: AccountStatus
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: OPEN
+    description: Lifecycle status
+    gen: OPEN 92%, DORMANT 5%, FROZEN 0.5%, CLOSED 2.5%
+  - name: OpenDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date opened
+    gen: ≥ primary holder's CustomerSince
+  - name: CloseDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Date closed
+    gen: Set only when CLOSED
+  - name: CurrentBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Equals the last transaction's RunningBalance
+    gen: Equals the last transaction's RunningBalance
+  - name: AvailableBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Balance available for withdrawal
+    gen: CurrentBalance − pending holds
+  - name: OverdraftLimit
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Approved overdraft limit
+    gen: default (data-model §1.5)
+  - name: InterestRate
+    type: DECIMAL
+    format: ">>9.9999"
+    decimals: 4
+    mandatory: true
+    initial: "0"
+    description: Annual interest rate (%)
+    gen: default (data-model §1.5)
+  - name: Nickname
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: Customer-chosen account nickname
+    gen: 30% populated
+  - name: LastStatementDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Period end of the most recent statement
+    gen: default (data-model §1.5)
+  - name: LastActivityAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: false
+    initial: "?"
+    description: Time of the most recent transaction
+    gen: default (data-model §1.5)
+  indexes:
+  - name: UxAccountNumber
+    unique: true
+    word: false
+    purpose: Lookup by business key
+    components:
+    - field: AccountNumber
+      order: asc
+  - name: IxAccountType
+    unique: false
+    word: false
+    purpose: Accounts per product
+    components:
+    - field: AccountTypeId
+      order: asc
+  - name: IxBranchStatus
+    unique: false
+    word: false
+    purpose: Branch reporting
+    components:
+    - field: BranchId
+      order: asc
+    - field: AccountStatus
+      order: asc
+  - name: IxCurrency
+    unique: false
+    word: false
+    purpose: Character-key join to Currency
+    components:
+    - field: CurrencyCode
+      order: asc
+- name: AccountHolder
+  description: Customer-to-account ownership with role (primary, joint, authorized)
+  class: M
+  rows: 2000000
+  scaling: linear
+  area: PB_Master_Narrow
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 70
+  fields:
+  - name: AccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Account
+      cardinality: 1.33 / 1–4
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Customer
+      cardinality: 2.0 / 1–8
+  - name: HolderRole
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: PRIMARY
+    description: Role of the holder on the account
+    gen: PRIMARY (exactly one per account), JOINT, AUTHORIZED, TRUSTEE
+  - name: OwnershipPercent
+    type: DECIMAL
+    format: ">>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Ownership share (%)
+    gen: The account's holders sum to 100
+  - name: AddedDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date the holder was added to the account
+    gen: default (data-model §1.5)
+  indexes:
+  - name: UxAccountCustomer
+    unique: true
+    word: false
+    purpose: Holders of an account
+    components:
+    - field: AccountId
+      order: asc
+    - field: CustomerId
+      order: asc
+  - name: IxCustomerAccount
+    unique: false
+    word: false
+    purpose: Accounts of a customer
+    components:
+    - field: CustomerId
+      order: asc
+    - field: AccountId
+      order: asc
+- name: Payee
+  description: Saved beneficiaries for payments
+  class: M
+  rows: 2500000
+  scaling: linear
+  area: PB_Master_Std
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 250
+  fields:
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Customer
+      cardinality: 2.5 / 0–25
+  - name: PayeeName
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Name of the payee
+    gen: default (data-model §1.5)
+  - name: PayeeKind
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Kind of payee
+    gen: BILLER, PERSON, BUSINESS
+  - name: BankRoutingNumber
+    type: CHARACTER
+    format: x(9)
+    mandatory: true
+    initial: ""
+    description: Payee bank routing number
+    gen: default (data-model §1.5)
+  - name: AccountNumberMasked
+    type: CHARACTER
+    format: x(20)
+    mandatory: true
+    initial: ""
+    description: Masked payee account number
+    gen: default (data-model §1.5)
+  - name: ReferenceText
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: Customer's account number at the biller
+    gen: Customer's account number at the biller
+  - name: Email
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ""
+    description: Email address
+    gen: 40% populated
+  - name: AddressLine1
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: First address line
+    gen: default (data-model §1.5)
+  - name: City
+    type: CHARACTER
+    format: x(40)
+    mandatory: true
+    initial: ""
+    description: City name
+    gen: default (data-model §1.5)
+  - name: PostalCode
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Postal / ZIP code
+    gen: default (data-model §1.5)
+  - name: IsFavorite
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: Marked as a favourite by the customer
+    gen: 20% yes
+  - name: LastPaidDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Date of the last payment to this payee
+    gen: default (data-model §1.5)
+  indexes:
+  - name: IxCustomerName
+    unique: false
+    word: false
+    purpose: A customer's payees, alphabetical
+    components:
+    - field: CustomerId
+      order: asc
+    - field: PayeeName
+      order: asc
+- name: ScheduledPayment
+  description: Recurring/future-dated payments
+  class: M
+  rows: 1000000
+  scaling: linear
+  area: PB_Master_Std
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 180
+  fields:
+  - name: AccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Account
+      cardinality: 0.67 / 0–10
+  - name: PayeeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Payee
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Payee
+      cardinality: 0.4 / 0–3
+  - name: Amount
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Amount paid on each run
+    gen: 10–5,000
+  - name: Frequency
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: MONTHLY
+    description: Recurrence frequency
+    gen: ONCE, WEEKLY, BIWEEKLY, MONTHLY, QUARTERLY
+  - name: NextRunDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Date of the next execution
+    gen: Unknown when not ACTIVE
+  - name: EndDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Last date the schedule runs
+    gen: default (data-model §1.5)
+  - name: Memo
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Payment memo
+    gen: default (data-model §1.5)
+  - name: PaymentStatus
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ACTIVE
+    description: Lifecycle status
+    gen: ACTIVE 70%, PAUSED 5%, CANCELLED 15%, COMPLETED 10%
+  - name: RunCount
+    type: INTEGER
+    format: ">>>9"
+    mandatory: true
+    initial: "0"
+    description: Number of executions so far
+    gen: default (data-model §1.5)
+  - name: LastRunAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: false
+    initial: "?"
+    description: When the schedule last ran
+    gen: default (data-model §1.5)
+  indexes:
+  - name: IxAccount
+    unique: false
+    word: false
+    purpose: An account's schedules
+    components:
+    - field: AccountId
+      order: asc
+  - name: IxPayee
+    unique: false
+    word: false
+    purpose: Payments to a payee
+    components:
+    - field: PayeeId
+      order: asc
+  - name: IxStatusNextRun
+    unique: false
+    word: false
+    purpose: Daily payment-run batch
+    components:
+    - field: PaymentStatus
+      order: asc
+    - field: NextRunDate
+      order: asc
+- name: Card
+  description: Debit/credit cards
+  class: M
+  rows: 1200000
+  scaling: linear
+  area: PB_Master_Std
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 230
+  fields:
+  - name: CardToken
+    type: CHARACTER
+    format: x(32)
+    mandatory: true
+    initial: ""
+    description: Random 32-character hex; unique
+    gen: Random 32-character hex; unique
+  - name: CardNumberMasked
+    type: CHARACTER
+    format: x(19)
+    mandatory: true
+    initial: ""
+    description: Masked card number
+    gen: "**** **** **** 1234"
+  - name: AccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Account
+      cardinality: 0.8 / 0–3
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Customer
+      cardinality: 1.2 / 0–4
+  - name: CardKind
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: DEBIT
+    description: Kind of card
+    gen: DEBIT 85%, CREDIT 12%, PREPAID 3%
+  - name: Network
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Card network
+    gen: VISA, MC, AMEX, DISCOVER
+  - name: EmbossedName
+    type: CHARACTER
+    format: x(26)
+    mandatory: true
+    initial: ""
+    description: Name printed on the card
+    gen: default (data-model §1.5)
+  - name: ExpiryMonth
+    type: INTEGER
+    format: "99"
+    mandatory: true
+    initial: "0"
+    description: Card expiry month
+    gen: 1–12
+  - name: ExpiryYear
+    type: INTEGER
+    format: "9999"
+    mandatory: true
+    initial: "0"
+    description: Card expiry year
+    gen: default (data-model §1.5)
+  - name: IssueDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date issued
+    gen: default (data-model §1.5)
+  - name: CardStatus
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ACTIVE
+    description: Lifecycle status
+    gen: ACTIVE 88%, LOCKED 2%, EXPIRED 6%, CANCELLED 4%
+  - name: DailyLimit
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Daily spending limit
+    gen: 500–10,000
+  - name: IsContactless
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "yes"
+    description: Whether the card supports contactless payment
+    gen: default (data-model §1.5)
+  indexes:
+  - name: UxCardToken
+    unique: true
+    word: false
+    purpose: Authorization lookup (random character key)
+    components:
+    - field: CardToken
+      order: asc
+  - name: IxAccount
+    unique: false
+    word: false
+    purpose: An account's cards
+    components:
+    - field: AccountId
+      order: asc
+  - name: IxCustomer
+    unique: false
+    word: false
+    purpose: A customer's cards
+    components:
+    - field: CustomerId
+      order: asc
+- name: Loan
+  description: Loan agreement
+  class: M
+  rows: 250000
+  scaling: linear
+  area: PB_Master_Wide
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 900
+  fields:
+  - name: LoanNumber
+    type: CHARACTER
+    format: x(14)
+    mandatory: true
+    initial: ""
+    description: L + 13 digits
+    gen: L + 13 digits
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Customer
+      cardinality: 0.25 / 0–3
+  - name: DisbursementAccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: payments are also debited from here
+    fk:
+      table: Account
+      indexed: false
+      reason: Lookup to Account only
+      cardinality: 0.17 / 0–3
+  - name: LoanOfficerEmployeeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Employee
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Employee
+      indexed: false
+      reason: Lookup to Employee only
+      cardinality: 50 / 0–400 (loan officers only)
+  - name: LoanKind
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Kind of loan
+    gen: MORTGAGE 25%, AUTO 35%, PERSONAL 25%, STUDENT 10%, HELOC 5%
+  - name: PrincipalAmount
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Original principal
+    gen: "Varies by kind: 2,000–1,500,000"
+  - name: InterestRate
+    type: DECIMAL
+    format: ">>9.9999"
+    decimals: 4
+    mandatory: true
+    initial: "0"
+    description: Annual interest rate (%)
+    gen: 2.5–24.0
+  - name: TermMonths
+    type: INTEGER
+    format: ">>9"
+    mandatory: true
+    initial: "0"
+    description: Term in months
+    gen: 12–360
+  - name: OriginationDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date the loan was originated
+    gen: Within 10 years before the as-of date
+  - name: MaturityDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date the loan matures
+    gen: Origination + term
+  - name: MonthlyPaymentAmount
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Scheduled monthly payment
+    gen: Amortization formula
+  - name: OutstandingPrincipal
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Principal still owed
+    gen: default (data-model §1.5)
+  - name: NextPaymentDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: false
+    initial: "?"
+    description: Date the next payment is due
+    gen: default (data-model §1.5)
+  - name: LoanStatus
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: CURRENT
+    description: Lifecycle status
+    gen: CURRENT 90%, LATE 5%, DEFAULT 1%, PAIDOFF 4%
+  - name: CollateralDescription
+    type: CHARACTER
+    format: x(400)
+    mandatory: true
+    initial: ""
+    description: 200–400 characters (width)
+    gen: 200–400 characters (width)
+  - name: UnderwritingNotes
+    type: CHARACTER
+    format: x(300)
+    mandatory: true
+    initial: ""
+    description: 150–300 characters (width)
+    gen: 150–300 characters (width)
+  indexes:
+  - name: UxLoanNumber
+    unique: true
+    word: false
+    purpose: Lookup
+    components:
+    - field: LoanNumber
+      order: asc
+  - name: IxCustomer
+    unique: false
+    word: false
+    purpose: A customer's loans
+    components:
+    - field: CustomerId
+      order: asc
+  - name: IxStatusNextPayment
+    unique: false
+    word: false
+    purpose: Billing batch
+    components:
+    - field: LoanStatus
+      order: asc
+    - field: NextPaymentDate
+      order: asc
+- name: StatementDocument
+  description: Rendered statement file
+  class: T
+  rows: 150000
+  scaling: linear
+  area: PB_Master_Std
+  indexArea: PB_Master_Idx
+  estimatedRecordBytes: 160
+  notes: The rendered copy of the **most recent** statement, for paperless accounts that requested a PDF (≈ 10% of accounts).
+  fields:
+  - name: AccountStatementId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to AccountStatement
+    gen: unique
+    fk:
+      table: AccountStatement
+      cardinality: 0.008 / 0–1
+  - name: DocumentFormat
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: PDF
+    description: Always PDF at load
+    gen: Always PDF at load
+  - name: PageCount
+    type: INTEGER
+    format: ">>9"
+    mandatory: true
+    initial: "0"
+    description: Number of pages
+    gen: 1–6
+  - name: Checksum
+    type: CHARACTER
+    format: x(64)
+    mandatory: true
+    initial: ""
+    description: SHA-256 hex of PdfContent
+    gen: SHA-256 hex of PdfContent
+  - name: RenderedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: When the document was rendered
+    gen: default (data-model §1.5)
+  - name: PdfContent
+    type: BLOB
+    mandatory: true
+    initial: "?"
+    description: Always present; 3–32 KB (avg 8 KB). Area PB_Lob_Stmt
+    gen: Always present; 3–32 KB (avg 8 KB). Area PB_Lob_Stmt
+    lob:
+      area: PB_Lob_Stmt
+      maxSize: 32K
+      content: PDF
+      fractionPopulated: 1.0
+      avgBytes: 8192
+      minBytes: 3072
+      maxBytes: 32768
+  - name: StatementXml
+    type: CLOB
+    mandatory: true
+    initial: "?"
+    description: Always present; 1–8 KB (avg 3 KB). Area PB_Lob_Stmt
+    gen: Always present; 1–8 KB (avg 3 KB). Area PB_Lob_Stmt
+    lob:
+      area: PB_Lob_Stmt
+      maxSize: 8K
+      codepage: UTF-8
+      content: XML
+      fractionPopulated: 1.0
+      avgBytes: 3072
+      minBytes: 1024
+      maxBytes: 8192
+  indexes:
+  - name: UxAccountStatement
+    unique: true
+    word: false
+    purpose: Fetch the document for a statement
+    components:
+    - field: AccountStatementId
+      order: asc
+- name: AccountStatement
+  description: Periodic account statement summary
+  class: T
+  rows: 18000000
+  scaling: linear
+  area: PB_Txn_Large
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 190
+  fields:
+  - name: AccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Account
+      cardinality: 12 / 1–12
+  - name: PeriodStart
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: First day of the statement period
+    gen: First of the month
+  - name: PeriodEnd
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Last day of the statement period
+    gen: Last of the month
+  - name: OpeningBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Balance at period start
+    gen: Equals the previous statement's ClosingBalance
+  - name: ClosingBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Balance at period end
+    gen: Opening − debits + credits
+  - name: TotalDebits
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Sum of debit amounts in the period
+    gen: Sum of the linked DebitTransaction.Amount
+  - name: TotalCredits
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Sum of credit amounts in the period
+    gen: Sum of the linked CreditTransaction.Amount
+  - name: DebitCount
+    type: INTEGER
+    format: ">>>>9"
+    mandatory: true
+    initial: "0"
+    description: Number of debits in the period
+    gen: default (data-model §1.5)
+  - name: CreditCount
+    type: INTEGER
+    format: ">>>>9"
+    mandatory: true
+    initial: "0"
+    description: Number of credits in the period
+    gen: default (data-model §1.5)
+  - name: InterestEarned
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Interest credited in the period
+    gen: default (data-model §1.5)
+  - name: FeesCharged
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Fees charged in the period
+    gen: default (data-model §1.5)
+  - name: DeliveryMethod
+    type: CHARACTER
+    format: x(6)
+    mandatory: true
+    initial: PAPER
+    description: How the statement is delivered
+    gen: EMAIL for paperless customers
+  - name: GeneratedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: When the statement was generated
+    gen: "PeriodEnd + 1 day, 02:00–05:00"
+  - name: NoticeText
+    type: CLOB
+    mandatory: false
+    initial: "?"
+    description: Regulatory/marketing notice; present on 1%; 0.5–4 KB (avg 1.5 KB). Area PB_Lob_Text
+    gen: Regulatory/marketing notice; present on 1%; 0.5–4 KB (avg 1.5 KB). Area PB_Lob_Text
+    lob:
+      area: PB_Lob_Text
+      maxSize: 4K
+      codepage: UTF-8
+      content: regulatory/marketing notice text
+      fractionPopulated: 0.01
+      avgBytes: 1536
+      minBytes: 512
+      maxBytes: 4096
+  indexes:
+  - name: UxAccountPeriod
+    unique: true
+    word: false
+    purpose: An account's statements, newest first
+    components:
+    - field: AccountId
+      order: asc
+    - field: PeriodEnd
+      order: desc
+  - name: IxPeriodEnd
+    unique: false
+    word: false
+    purpose: Month-end batch
+    components:
+    - field: PeriodEnd
+      order: asc
+- name: MonthlyBalance
+  description: Month-end balance snapshot per account (opening/closing/min/max/average balance, totals)
+  class: T
+  rows: 18000000
+  scaling: linear
+  area: PB_Txn_Large
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 160
+  fields:
+  - name: AccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Account
+      cardinality: 12 / 1–12
+  - name: BalanceMonth
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Month the snapshot describes
+    gen: First day of the month
+  - name: OpeningBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Balance at period start
+    gen: default (data-model §1.5)
+  - name: ClosingBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Balance at period end
+    gen: default (data-model §1.5)
+  - name: MinimumBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Minimum balance
+    gen: default (data-model §1.5)
+  - name: MaximumBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Highest balance during the period
+    gen: default (data-model §1.5)
+  - name: AverageDailyBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Average of end-of-day balances
+    gen: default (data-model §1.5)
+  - name: TotalDebits
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Sum of debit amounts in the period
+    gen: default (data-model §1.5)
+  - name: TotalCredits
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Sum of credit amounts in the period
+    gen: default (data-model §1.5)
+  - name: DebitCount
+    type: INTEGER
+    format: ">>>>9"
+    mandatory: true
+    initial: "0"
+    description: Number of debits in the period
+    gen: default (data-model §1.5)
+  - name: CreditCount
+    type: INTEGER
+    format: ">>>>9"
+    mandatory: true
+    initial: "0"
+    description: Number of credits in the period
+    gen: default (data-model §1.5)
+  - name: DaysOverdrawn
+    type: INTEGER
+    format: ">9"
+    mandatory: true
+    initial: "0"
+    description: Days with a negative end-of-day balance
+    gen: 0–31; 97% are 0
+  indexes:
+  - name: UxAccountMonth
+    unique: true
+    word: false
+    purpose: An account's history
+    components:
+    - field: AccountId
+      order: asc
+    - field: BalanceMonth
+      order: asc
+  - name: IxBalanceMonth
+    unique: false
+    word: false
+    purpose: Month-wide aggregates
+    components:
+    - field: BalanceMonth
+      order: asc
+- name: CreditTransaction
+  description: Money entering an account
+  class: T
+  rows: 18000000
+  scaling: linear
+  area: PB_Txn_Large
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 170
+  fields:
+  - name: AccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Account
+      cardinality: 12 / 0–100
+  - name: TransactionTypeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to TransactionType
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: TransactionType
+      indexed: false
+      reason: Same as above
+      cardinality: 750,000 / 0–7,000,000
+  - name: AccountStatementId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to AccountStatement
+    gen: 0 = not yet on a statement (runtime inserts)
+    fk:
+      table: AccountStatement
+      optional: true
+      cardinality: 1 / 0–15
+  - name: PostedDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Business date the transaction posted
+    gen: default (data-model §1.5)
+  - name: PostedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: Timestamp the transaction posted
+    gen: default (data-model §1.5)
+  - name: Amount
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Amount credited (positive)
+    gen: "> 0; payroll 1,000–8,000; other log-normal"
+  - name: RunningBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Account balance after posting
+    gen: Account balance after posting
+  - name: Description
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Human-readable description
+    gen: default (data-model §1.5)
+  - name: PayerName
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Name of the payer
+    gen: default (data-model §1.5)
+  - name: ReferenceNumber
+    type: CHARACTER
+    format: x(20)
+    mandatory: true
+    initial: ""
+    description: External reference number
+    gen: default (data-model §1.5)
+  - name: IsPayroll
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "no"
+    description: 40% yes
+    gen: 40% yes
+  indexes:
+  - name: IxAccountPosted
+    unique: false
+    word: false
+    purpose: Transaction history, newest first
+    components:
+    - field: AccountId
+      order: asc
+    - field: PostedAt
+      order: desc
+  - name: IxAccountStatement
+    unique: false
+    word: false
+    purpose: Statement detail (all transactions on one statement)
+    components:
+    - field: AccountStatementId
+      order: asc
+  - name: IxPostedDate
+    unique: false
+    word: false
+    purpose: Daily batch/range scans
+    components:
+    - field: PostedDate
+      order: asc
+- name: Transfer
+  description: Movement between two accounts, linking one debit and one credit
+  class: T
+  rows: 6000000
+  scaling: linear
+  area: PB_Txn_Large
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 100
+  notes: Each transfer creates one DebitTransaction on the source account and one CreditTransaction on the destination account,
+    both with transaction type XFER.
+  fields:
+  - name: FromAccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Account
+      cardinality: 4 / 0–50
+  - name: ToAccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Account
+      cardinality: 4 / 0–50
+  - name: Amount
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Amount transferred
+    gen: default (data-model §1.5)
+  - name: TransferDateTime
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: When the transfer was made
+    gen: default (data-model §1.5)
+  - name: DebitTransactionId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to DebitTransaction
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: DebitTransaction
+      cardinality: 0.12 / 0–1
+  - name: CreditTransactionId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to CreditTransaction
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: CreditTransaction
+      indexed: false
+      reason: Reverse lookup handled through the debit side
+      cardinality: 0.33 / 0–1
+  - name: TransferStatus
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: POSTED
+    description: Lifecycle status
+    gen: Always POSTED at load
+  - name: Channel
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: ONLINE
+    description: ONLINE, MOBILE, BRANCH
+    gen: ONLINE, MOBILE, BRANCH
+  indexes:
+  - name: IxFromAccount
+    unique: false
+    word: false
+    purpose: Outgoing transfers
+    components:
+    - field: FromAccountId
+      order: asc
+    - field: TransferDateTime
+      order: asc
+  - name: IxToAccount
+    unique: false
+    word: false
+    purpose: Incoming transfers
+    components:
+    - field: ToAccountId
+      order: asc
+    - field: TransferDateTime
+      order: asc
+  - name: UxDebitTransaction
+    unique: true
+    word: false
+    purpose: Reverse link from a debit
+    components:
+    - field: DebitTransactionId
+      order: asc
+- name: LoanPayment
+  description: Payments against a loan
+  class: T
+  rows: 6000000
+  scaling: linear
+  area: PB_Txn_Large
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 100
+  fields:
+  - name: LoanId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Loan
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Loan
+      cardinality: 24 / 1–60
+  - name: DueDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Payment due date
+    gen: Monthly
+  - name: PaymentDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Date the payment was made
+    gen: DueDate −5 to +20 days
+  - name: AmountPaid
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Total amount paid
+    gen: default (data-model §1.5)
+  - name: PrincipalPortion
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Portion of the payment applied to principal
+    gen: default (data-model §1.5)
+  - name: InterestPortion
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Portion of the payment applied to interest
+    gen: default (data-model §1.5)
+  - name: LateFee
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Late fee charged
+    gen: Non-zero when paid more than 10 days late
+  - name: DebitTransactionId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to DebitTransaction
+    gen: 0 when paid before the 12-month history window
+    fk:
+      table: DebitTransaction
+      optional: true
+      indexed: false
+      reason: Lookup to DebitTransaction only
+      cardinality: 0.06 / 0–1
+  indexes:
+  - name: IxLoanPayment
+    unique: false
+    word: false
+    purpose: Payment history
+    components:
+    - field: LoanId
+      order: asc
+    - field: PaymentDate
+      order: desc
+  - name: IxDueDate
+    unique: false
+    word: false
+    purpose: Delinquency reporting
+    components:
+    - field: DueDate
+      order: asc
+- name: LoginEvent
+  description: Online banking login/session events
+  class: T
+  rows: 12000000
+  scaling: linear
+  area: PB_Txn_Large
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 120
+  fields:
+  - name: CustomerId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Customer
+    gen: skewed (30% of customers never log in)
+    fk:
+      table: Customer
+      cardinality: 12 / 0–400 (skewed)
+  - name: EventDateTime
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: When the event occurred
+    gen: default (data-model §1.5)
+  - name: EventKind
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: LOGIN
+    description: LOGIN 70%, FAILED 8%, MFA 12%, LOGOUT 10%
+    gen: LOGIN 70%, FAILED 8%, MFA 12%, LOGOUT 10%
+  - name: Channel
+    type: CHARACTER
+    format: x(6)
+    mandatory: true
+    initial: WEB
+    description: WEB, MOBILE
+    gen: WEB, MOBILE
+  - name: IpAddress
+    type: CHARACTER
+    format: x(39)
+    mandatory: true
+    initial: ""
+    description: Client IP address
+    gen: IPv4 90%, IPv6 10%
+  - name: DeviceId
+    type: CHARACTER
+    format: x(32)
+    mandatory: true
+    initial: ""
+    description: Client device identifier
+    gen: default (data-model §1.5)
+  - name: IsSuccess
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "yes"
+    description: Whether the event succeeded
+    gen: default (data-model §1.5)
+  - name: SessionSeconds
+    type: INTEGER
+    format: ">>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Session length in seconds
+    gen: default (data-model §1.5)
+  indexes:
+  - name: IxCustomerTime
+    unique: false
+    word: false
+    purpose: Recent logins for a customer
+    components:
+    - field: CustomerId
+      order: asc
+    - field: EventDateTime
+      order: desc
+- name: DebitTransaction
+  description: Money leaving an account
+  class: T
+  rows: 50000000
+  scaling: linear
+  area: PB_Txn_Debit
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 170
+  fields:
+  - name: AccountId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Account
+    gen: skewed (active checking accounts dominate)
+    fk:
+      table: Account
+      cardinality: 33 / 0–400 (skewed)
+  - name: TransactionTypeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to TransactionType
+    gen: POS 50%, ACH 12%, ATM 8%, XFER 12% (= Transfer rows), LOANPMT 6% (= LoanPayment rows in window), FEE 4%, other 8%
+    fk:
+      table: TransactionType
+      indexed: false
+      reason: Tiny parent; an index would have 60 distinct keys over 50M rows
+      cardinality: 2,500,000 / 0–25,000,000 (POS 50%)
+  - name: AccountStatementId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to AccountStatement
+    gen: 0 = not yet on a statement
+    fk:
+      table: AccountStatement
+      optional: true
+      cardinality: 2.8 / 0–40
+  - name: MerchantId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Merchant
+    gen: set for POS/ecommerce, otherwise 0
+    fk:
+      table: Merchant
+      optional: true
+      cardinality: 375 / 0–50,000 (Zipf; ≈ 60% of rows set)
+  - name: PostedDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: Business date the transaction posted
+    gen: default (data-model §1.5)
+  - name: PostedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: Timestamp the transaction posted
+    gen: Diurnal distribution
+  - name: Amount
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Amount debited (positive)
+    gen: "> 0; log-normal (median ≈ 35)"
+  - name: RunningBalance
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Balance after posting; may be negative
+    gen: Balance after posting; may be negative
+  - name: Description
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: Human-readable description
+    gen: Merchant name or type description
+  - name: ReferenceNumber
+    type: CHARACTER
+    format: x(20)
+    mandatory: true
+    initial: ""
+    description: External reference number
+    gen: default (data-model §1.5)
+  - name: CheckNumber
+    type: INTEGER
+    format: ">>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Set on 1% of rows (checks)
+    gen: Set on 1% of rows (checks)
+  indexes:
+  - name: IxAccountPosted
+    unique: false
+    word: false
+    purpose: Transaction history, newest first
+    components:
+    - field: AccountId
+      order: asc
+    - field: PostedAt
+      order: desc
+  - name: IxAccountStatement
+    unique: false
+    word: false
+    purpose: Statement detail (all transactions on one statement)
+    components:
+    - field: AccountStatementId
+      order: asc
+  - name: IxPostedDate
+    unique: false
+    word: false
+    purpose: Daily batch/range scans
+    components:
+    - field: PostedDate
+      order: asc
+  - name: IxMerchantDate
+    unique: false
+    word: false
+    purpose: Merchant analytics
+    components:
+    - field: MerchantId
+      order: asc
+    - field: PostedDate
+      order: asc
+- name: CardAuthorization
+  description: Card authorization requests
+  class: T
+  rows: 50000000
+  scaling: linear
+  area: PB_Txn_CardAuth
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 100
+  fields:
+  - name: CardId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Card
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Card
+      cardinality: 42 / 0–500
+  - name: MerchantId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Merchant
+    gen: Random existing parent row, respecting the cardinality
+    fk:
+      table: Merchant
+      cardinality: 625 / 0–80,000 (Zipf)
+  - name: AuthDateTime
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: When the authorization was requested (UTC offset kept)
+    gen: default (data-model §1.5)
+  - name: MerchantLocalDateTime
+    type: DATETIME
+    format: "99/99/9999 HH:MM:SS.SSS"
+    mandatory: true
+    initial: "?"
+    description: AuthDateTime in the merchant's local zone, stored without an offset
+    gen: AuthDateTime in the merchant's local zone, stored without an offset
+  - name: Amount
+    type: DECIMAL
+    format: "->>>,>>>,>>>,>>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "0"
+    description: Amount authorized, in CurrencyCode
+    gen: default (data-model §1.5)
+  - name: CurrencyCode
+    type: CHARACTER
+    format: x(3)
+    mandatory: true
+    initial: USD
+    description: ISO currency code
+    gen: 95% USD
+    fk:
+      table: Currency
+      field: CurrencyCode
+      indexed: false
+      reason: Lookup to Currency only
+      cardinality: 1,250,000 / 0–47,500,000 (USD 95%)
+  - name: AuthCode
+    type: CHARACTER
+    format: x(6)
+    mandatory: true
+    initial: ""
+    description: Authorization code returned by the issuer
+    gen: Empty when declined
+  - name: ResponseCode
+    type: CHARACTER
+    format: x(2)
+    mandatory: true
+    initial: "00"
+    description: 00 approved 94%; 05, 51, 54, 61 declined
+    gen: 00 approved 94%; 05, 51, 54, 61 declined
+  - name: IsApproved
+    type: LOGICAL
+    format: yes/no
+    mandatory: true
+    initial: "yes"
+    description: Whether the authorization was approved
+    gen: default (data-model §1.5)
+  - name: EntryMode
+    type: CHARACTER
+    format: x(4)
+    mandatory: true
+    initial: CHIP
+    description: CHIP, SWIP, TAP, ECOM
+    gen: CHIP, SWIP, TAP, ECOM
+  - name: AuthKind
+    type: CHARACTER
+    format: x(9)
+    mandatory: true
+    initial: FINAL
+    description: FINAL 56%, PREAUTH 22%, INCREMENT 10%, REVERSAL 12%
+    gen: FINAL 56%, PREAUTH 22%, INCREMENT 10%, REVERSAL 12%
+  - name: DebitTransactionId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to DebitTransaction
+    gen: set only on approved FINAL auths (≈ 50% of rows, exactly one per POS debit); otherwise 0
+    fk:
+      table: DebitTransaction
+      optional: true
+      indexed: false
+      reason: Lookup to DebitTransaction only
+      cardinality: 0.5 / 0–1
+  indexes:
+  - name: IxCardDate
+    unique: false
+    word: false
+    purpose: Recent auths for a card (fraud check)
+    components:
+    - field: CardId
+      order: asc
+    - field: AuthDateTime
+      order: desc
+  - name: IxMerchantDate
+    unique: false
+    word: false
+    purpose: Merchant settlement
+    components:
+    - field: MerchantId
+      order: asc
+    - field: AuthDateTime
+      order: asc
+- name: AuditLog
+  description: System change log
+  class: T
+  rows: 50000000
+  scaling: linear
+  area: PB_Txn_Audit
+  indexArea: PB_Txn_Idx
+  estimatedRecordBytes: 110
+  notes: Append-only. It has only the four standard indexes, making it the insert-throughput reference table.
+  fields:
+  - name: EventDateTime
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: When the event occurred
+    gen: Monotonically increasing with AuditLogId
+  - name: TableName
+    type: CHARACTER
+    format: x(32)
+    mandatory: true
+    initial: ""
+    description: Name of the audited table (weighted toward Account, Customer, Card)
+    gen: Name of the audited table (weighted toward Account, Customer, Card)
+  - name: RecordId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: <Table>Id of the audited row
+    gen: <Table>Id of the audited row
+  - name: AuditAction
+    type: CHARACTER
+    format: x(1)
+    mandatory: true
+    initial: U
+    description: C 20%, U 75%, D 5% (named to avoid the SQL reserved word ACTION)
+    gen: C 20%, U 75%, D 5% (named to avoid the SQL reserved word ACTION)
+  - name: EmployeeId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Reference to Employee
+    gen: 0 = system (70%)
+    fk:
+      table: Employee
+      optional: true
+      indexed: false
+      reason: Minimal-index table by design (FR-020)
+      cardinality: 3,000 / 0–20,000
+  - name: ChangeSummary
+    type: CHARACTER
+    format: x(60)
+    mandatory: true
+    initial: ""
+    description: "e.g. Status: OPEN->DORMANT"
+    gen: "e.g. Status: OPEN->DORMANT"
+  indexes: []
+- name: BenchmarkTableInfo
+  description: Row counts and max sequential IDs per table
+  class: R
+  rows: 32
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  estimatedRecordBytes: 90
+  notes: Written last by the loader. Benchmarks read it to learn the valid ID range of each table.
+  fields:
+  - name: TableName
+    type: CHARACTER
+    format: x(32)
+    mandatory: true
+    initial: ""
+    description: Exact table name
+    gen: Exact table name
+  - name: TableRowCount
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Rows after the load (named to avoid the reserved/function word ROWCOUNT)
+    gen: Rows after the load (named to avoid the reserved/function word ROWCOUNT)
+  - name: MaxId
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: Highest <Table>Id; equals TableRowCount right after the load
+    gen: Highest <Table>Id; equals TableRowCount right after the load
+  - name: ScaleFactor
+    type: DECIMAL
+    format: ">>9.99"
+    decimals: 2
+    mandatory: true
+    initial: "1"
+    description: Scale factor used for the load
+    gen: Scale factor used for the load
+  - name: VolumeTier
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Tier at scale factor 1
+    gen: Tier at scale factor 1
+  - name: RecordSizeTier
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ""
+    description: Record-size tier of the table
+    gen: default (data-model §1.5)
+  - name: AsOfDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: "?"
+    description: End of the history window
+    gen: End of the history window
+  - name: LoadedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "?"
+    description: When the load finished
+    gen: default (data-model §1.5)
+  indexes:
+  - name: UxTableName
+    unique: true
+    word: false
+    purpose: FIND BenchmarkTableInfo WHERE TableName = "Customer"
+    components:
+    - field: TableName
+      order: asc

@@ -1,0 +1,296 @@
+# Internal loader tables used by pbgen (feature 003). NOT benchmark tables: excluded from docs, counts and checks.
+# Rendered to db/parkbench_loader.df by: python3 tools/gen_db_files.py schema/loader-schema.yaml --out db --loader
+
+schema:
+  name: ParkBenchDB-loader
+  target: "OpenEdge 12.8"
+  blockSizeBytes: 8192
+  asOfDateRule: "n/a"
+  historyMonths: 12
+
+standardFields: []
+masterFields: []
+standardIndexes: []
+
+# Storage areas (Type II, 8 KB blocks). research.md R9
+areas:
+  - { name: PB_Ref_Data, kind: data, recordsPerBlock: 64, blocksPerCluster: 8, description: "All Tiny and Small tables (exempt from the RPB formula; waste is negligible under 100k rows)" }
+  - { name: PB_Master_Narrow, kind: data, recordsPerBlock: 32, blocksPerCluster: 64, description: "Medium Narrow tables" }
+  - { name: PB_Master_Std, kind: data, recordsPerBlock: 16, blocksPerCluster: 64, description: "Medium Standard and LOB-bearing tables" }
+  - { name: PB_Master_Wide, kind: data, recordsPerBlock: 8, blocksPerCluster: 64, description: "Medium Wide tables" }
+  - { name: PB_Txn_Debit, kind: data, recordsPerBlock: 32, blocksPerCluster: 512, description: "DebitTransaction (Very Large) in its own area" }
+  - { name: PB_Txn_CardAuth, kind: data, recordsPerBlock: 64, blocksPerCluster: 512, description: "CardAuthorization (Very Large) in its own area" }
+  - { name: PB_Txn_Audit, kind: data, recordsPerBlock: 32, blocksPerCluster: 512, description: "AuditLog (Very Large) in its own area" }
+  - { name: PB_Txn_Large, kind: data, recordsPerBlock: 32, blocksPerCluster: 512, description: "Large transactional tables" }
+  - { name: PB_Ref_Idx, kind: index, blocksPerCluster: 8, description: "Indexes of PB_Ref_Data tables" }
+  - { name: PB_Master_Idx, kind: index, blocksPerCluster: 64, description: "Indexes of Medium tables" }
+  - { name: PB_Txn_Idx, kind: index, blocksPerCluster: 512, description: "Indexes of Large and Very Large tables" }
+  - { name: PB_Lob_Doc, kind: lob, blocksPerCluster: 512, description: "Binary documents and images (Employee.Photo, CustomerDocument.Content)" }
+  - { name: PB_Lob_Stmt, kind: lob, blocksPerCluster: 512, description: "Rendered statements (StatementDocument.PdfContent, StatementDocument.StatementXml)" }
+  - { name: PB_Lob_Text, kind: lob, blocksPerCluster: 512, description: "Long text (CustomerNote.NoteText, AccountStatement.NoticeText)" }
+
+tables:
+- name: LoaderRun
+  description: 'Internal: one row per data-generation run (initial fill or growth step)'
+  class: T
+  rows: 1
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  fields:
+  - name: LoaderRunId
+    type: INT64
+    format: '>>>>>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Run number 1, 2, ... in run order
+    gen: loader state
+  - name: RunKind
+    type: CHARACTER
+    format: x(8)
+    mandatory: true
+    initial: ''
+    description: INITIAL or GROWTH
+    gen: loader state
+  - name: RunStatus
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: PLANNED
+    description: PLANNED, RUNNING or COMPLETE
+    gen: loader state
+  - name: TargetScale
+    type: DECIMAL
+    format: '>>9.999999'
+    decimals: 6
+    mandatory: true
+    initial: '0'
+    description: Cumulative scale factor after this run
+    gen: loader state
+  - name: DeltaScale
+    type: DECIMAL
+    format: '>>9.999999'
+    decimals: 6
+    mandatory: true
+    initial: '0'
+    description: Scale factor added by this run
+    gen: loader state
+  - name: TargetDiskBytes
+    type: INT64
+    format: '>>>>>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Requested cumulative on-disk size in bytes (0 if given as scale or customers)
+    gen: loader state
+  - name: RunSeed
+    type: INT64
+    format: '>>>>>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Seed for this run
+    gen: loader state
+  - name: AsOfDate
+    type: DATE
+    format: 99/99/9999
+    mandatory: true
+    initial: '?'
+    description: End of the 12-month history window (copied from run 1)
+    gen: loader state
+  - name: GeneratorVersion
+    type: CHARACTER
+    format: x(20)
+    mandatory: true
+    initial: ''
+    description: pbgen version that planned the run
+    gen: loader state
+  - name: FakerVersion
+    type: CHARACTER
+    format: x(20)
+    mandatory: true
+    initial: ''
+    description: Faker version that planned the run
+    gen: loader state
+  - name: UnitCount
+    type: INTEGER
+    format: '>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Units planned
+    gen: loader state
+  - name: UnitsDone
+    type: INTEGER
+    format: '>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Length of the done-unit prefix applied to BenchmarkTableInfo
+    gen: loader state
+  - name: PlanSummary
+    type: CLOB
+    mandatory: false
+    initial: '?'
+    description: 'JSON: per-table target rows and first/last IDs'
+    gen: loader state
+    lob:
+      area: PB_Lob_Text
+      maxSize: 1M
+      codepage: UTF-8
+      content: JSON
+      fractionPopulated: 1
+      avgBytes: 20000
+      minBytes: 100
+      maxBytes: 1048576
+  - name: PlannedAt
+    type: DATETIME-TZ
+    format: 99/99/9999 HH:MM:SS.SSS+HH:MM
+    mandatory: false
+    initial: '?'
+    description: When the run was planned
+    gen: loader state
+  - name: CompletedAt
+    type: DATETIME-TZ
+    format: 99/99/9999 HH:MM:SS.SSS+HH:MM
+    mandatory: false
+    initial: '?'
+    description: When the run completed
+    gen: loader state
+  - name: MeasuredDiskBytes
+    type: INT64
+    format: '>>>>>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Real size of the database extents at finalize
+    gen: loader state
+  indexes:
+  - name: PkLoaderRun
+    unique: true
+    purpose: Run lookup
+    components:
+    - field: LoaderRunId
+      order: asc
+- name: LoaderUnit
+  description: 'Internal: one row per unit of generation work'
+  class: T
+  rows: 1
+  scaling: fixed
+  area: PB_Ref_Data
+  indexArea: PB_Ref_Idx
+  fields:
+  - name: LoaderRunId
+    type: INT64
+    format: '>>>>>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Run the unit belongs to
+    gen: loader state
+  - name: UnitNo
+    type: INTEGER
+    format: '>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: 1..UnitCount within the run, in ID order
+    gen: loader state
+  - name: Phase
+    type: INTEGER
+    format: '9'
+    mandatory: true
+    initial: '0'
+    description: 0 reference, 1 shared, 2 customers
+    gen: loader state
+  - name: UnitKind
+    type: CHARACTER
+    format: x(10)
+    mandatory: true
+    initial: ''
+    description: REFERENCE, EMPLOYEE, MERCHANT or CUSTOMER
+    gen: loader state
+  - name: UnitStatus
+    type: CHARACTER
+    format: x(1)
+    mandatory: true
+    initial: P
+    description: P pending, C claimed, D done
+    gen: loader state
+  - name: UnitSeed
+    type: CHARACTER
+    format: x(64)
+    mandatory: true
+    initial: ''
+    description: Hex SHA-256 seed of the unit
+    gen: loader state
+  - name: FirstIds
+    type: CHARACTER
+    format: x(2000)
+    mandatory: true
+    initial: ''
+    description: Table=firstId;... for every table the unit writes
+    gen: loader state
+  - name: RowCounts
+    type: CHARACTER
+    format: x(2000)
+    mandatory: true
+    initial: ''
+    description: Table=count;... exact row counts
+    gen: loader state
+  - name: TotalRows
+    type: INTEGER
+    format: '>>>>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Sum of RowCounts
+    gen: loader state
+  - name: ClaimedBy
+    type: CHARACTER
+    format: x(80)
+    mandatory: true
+    initial: ''
+    description: host:pid:worker:start-epoch of the claiming worker
+    gen: loader state
+  - name: ClaimedAt
+    type: DATETIME-TZ
+    format: 99/99/9999 HH:MM:SS.SSS+HH:MM
+    mandatory: false
+    initial: '?'
+    description: When the unit was claimed
+    gen: loader state
+  - name: HeartbeatAt
+    type: DATETIME-TZ
+    format: 99/99/9999 HH:MM:SS.SSS+HH:MM
+    mandatory: false
+    initial: '?'
+    description: Last heartbeat of the claiming worker
+    gen: loader state
+  - name: DoneAt
+    type: DATETIME-TZ
+    format: 99/99/9999 HH:MM:SS.SSS+HH:MM
+    mandatory: false
+    initial: '?'
+    description: When the unit was loaded
+    gen: loader state
+  - name: Attempts
+    type: INTEGER
+    format: '>>>>9'
+    mandatory: true
+    initial: '0'
+    description: Number of claims
+    gen: loader state
+  indexes:
+  - name: PkLoaderUnit
+    unique: true
+    purpose: Unit lookup and ID-order scans
+    components:
+    - field: LoaderRunId
+      order: asc
+    - field: UnitNo
+      order: asc
+  - name: IxClaimable
+    unique: false
+    purpose: Claim the lowest pending unit of the open phase
+    components:
+    - field: LoaderRunId
+      order: asc
+    - field: Phase
+      order: asc
+    - field: UnitStatus
+      order: asc
+    - field: UnitNo
+      order: asc

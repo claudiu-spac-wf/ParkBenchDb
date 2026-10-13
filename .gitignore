@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.agents/
+.claude/
+.specify/
+*.egg-info/
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.tmp/
+pbwork-spool/
+pbwork-runs/
+specs/
+# Built OpenEdge databases (db/build_db.* targets)
+data/
+.venv-win/
+pbgen-spool/

@@ -1,0 +1,33 @@
+table,rows_sf1,scaling,avg_record_bytes,data_gb,lob_gb,volume_tier,size_tier
+Currency,40,fixed,70,0.000,0.000,Tiny,Narrow
+Country,250,fixed,80,0.000,0.000,Tiny,Narrow
+ExchangeRate,14235,fixed,70,0.001,0.000,Small,Narrow
+Branch,250,fixed,300,0.000,0.000,Tiny,Standard
+Employee,5000,linear,330,0.002,0.098,Small,LOB
+AccountType,24,fixed,1500,0.000,0.000,Tiny,Wide
+InterestRateHistory,2880,fixed,60,0.000,0.000,Small,Narrow
+TransactionType,60,fixed,110,0.000,0.000,Tiny,Narrow
+MerchantCategory,600,fixed,110,0.000,0.000,Tiny,Narrow
+Merchant,80000,linear,300,0.024,0.000,Small,Standard
+Customer,1000000,linear,850,0.850,0.000,Medium,Wide
+CustomerAddress,1500000,linear,220,0.330,0.000,Medium,Standard
+CustomerContact,2500000,linear,110,0.275,0.000,Medium,Narrow
+CustomerDocument,1000000,linear,200,0.200,1.638,Medium,LOB
+CustomerNote,1500000,linear,380,0.570,1.080,Medium,LOB
+Account,1500000,linear,300,0.450,0.000,Medium,Standard
+AccountHolder,2000000,linear,70,0.140,0.000,Medium,Narrow
+Payee,2500000,linear,250,0.625,0.000,Medium,Standard
+ScheduledPayment,1000000,linear,180,0.180,0.000,Medium,Standard
+Card,1200000,linear,230,0.276,0.000,Medium,Standard
+Loan,250000,linear,900,0.225,0.000,Medium,Wide
+StatementDocument,150000,linear,160,0.024,1.690,Medium,LOB
+AccountStatement,18000000,linear,190,3.420,0.276,Large,LOB
+MonthlyBalance,18000000,linear,160,2.880,0.000,Large,Standard
+CreditTransaction,18000000,linear,170,3.060,0.000,Large,Standard
+Transfer,6000000,linear,100,0.600,0.000,Large,Narrow
+LoanPayment,6000000,linear,100,0.600,0.000,Large,Narrow
+LoginEvent,12000000,linear,120,1.440,0.000,Large,Narrow
+DebitTransaction,50000000,linear,170,8.500,0.000,Very Large,Standard
+CardAuthorization,50000000,linear,100,5.000,0.000,Very Large,Narrow
+AuditLog,50000000,linear,110,5.500,0.000,Very Large,Narrow
+BenchmarkTableInfo,32,fixed,90,0.000,0.000,Tiny,Narrow

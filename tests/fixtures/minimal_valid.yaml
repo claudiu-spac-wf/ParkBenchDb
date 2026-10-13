@@ -1,0 +1,192 @@
+# Minimal valid schema used by the unit tests (Parent, Child, BenchmarkTableInfo).
+schema:
+  name: ParkBenchDB
+  target: "OpenEdge 12.8"
+  blockSizeBytes: 8192
+  asOfDateRule: "last day of the month before the load"
+  historyMonths: 12
+
+# Injected at the start of every table, in this order ({Table} = table name). data-model.md §1.1
+standardFields:
+  - name: "{Table}Id"
+    type: INT64
+    format: ">>>>>>>>>>>9"
+    mandatory: true
+    initial: "0"
+    description: "Dense sequential identifier, 1..N with no gaps after the initial load. Runtime inserts use NEXT-VALUE(Seq{Table}Id)."
+    gen: "Assigned 1..N in load order"
+  - name: RandomInt10
+    type: INTEGER
+    format: ">9"
+    mandatory: true
+    initial: "0"
+    description: "Independent uniform random value 1–10 for selecting ≈ 10% subsets. 0 = unassigned (invalid)."
+    gen: "Independent uniform 1–10; 0 = unassigned (invalid)"
+  - name: RandomInt100
+    type: INTEGER
+    format: ">>9"
+    mandatory: true
+    initial: "0"
+    description: "Independent uniform random value 1–100 for selecting ≈ 1% subsets. 0 = unassigned (invalid)."
+    gen: "Independent uniform 1–100; 0 = unassigned (invalid)"
+  - name: RandomInt1000
+    type: INTEGER
+    format: ">>>9"
+    mandatory: true
+    initial: "0"
+    description: "Independent uniform random value 1–1000 for selecting ≈ 0.1% subsets. 0 = unassigned (invalid)."
+    gen: "Independent uniform 1–1000; 0 = unassigned (invalid)"
+  - name: CreatedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "NOW"
+    description: "When the row was created. For historical rows, a synthetic timestamp consistent with the row's business date."
+    gen: "Consistent with the row's business date; NOW for runtime inserts"
+
+# Appended as the last field of every class M (master) table.
+masterFields:
+  - name: UpdatedAt
+    type: DATETIME-TZ
+    format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+    mandatory: true
+    initial: "NOW"
+    description: "Last modification time; equals CreatedAt right after the load."
+    gen: "Equal to CreatedAt at load"
+
+# Injected at the start of every table's index list. data-model.md §1.2
+standardIndexes:
+  - name: "Pk{Table}"
+    primary: true
+    unique: true
+    purpose: "Single-row random access by sequential ID; default scan order"
+    components:
+      - { field: "{Table}Id", order: asc }
+  - name: IxRandomInt10
+    unique: false
+    purpose: "Select ≈ 10% of rows (RandomInt10 = k)"
+    components:
+      - { field: RandomInt10, order: asc }
+      - { field: "{Table}Id", order: asc }
+  - name: IxRandomInt100
+    unique: false
+    purpose: "Select ≈ 1% of rows (RandomInt100 = k)"
+    components:
+      - { field: RandomInt100, order: asc }
+      - { field: "{Table}Id", order: asc }
+  - name: IxRandomInt1000
+    unique: false
+    purpose: "Select ≈ 0.1% of rows (RandomInt1000 = k)"
+    components:
+      - { field: RandomInt1000, order: asc }
+      - { field: "{Table}Id", order: asc }
+
+areas:
+  - { name: FxData, kind: data, recordsPerBlock: 32, blocksPerCluster: 8, description: "Fixture data area" }
+  - { name: FxIdx, kind: index, blocksPerCluster: 8, description: "Fixture index area" }
+  - { name: FxLob, kind: lob, blocksPerCluster: 8, description: "Fixture LOB area" }
+
+tables:
+  - name: Parent
+    description: "A parent row"
+    class: M
+    rows: 1000
+    scaling: linear
+    area: FxData
+    indexArea: FxIdx
+    fields:
+      - name: ParentName
+        type: CHARACTER
+        format: "x(40)"
+        mandatory: true
+        initial: ""
+        description: "Name of the parent"
+        gen: "default (data-model §1.5)"
+    indexes:
+      - name: IxParentName
+        unique: false
+        purpose: "Lookup by name"
+        components:
+          - { field: ParentName, order: asc }
+  - name: Child
+    description: "A child row with a note"
+    class: T
+    rows: 2000
+    scaling: linear
+    area: FxData
+    indexArea: FxIdx
+    fields:
+      - name: ParentId
+        type: INT64
+        format: ">>>>>>>>>>>9"
+        mandatory: true
+        initial: "0"
+        description: "Reference to Parent"
+        gen: "Random existing parent row"
+        fk:
+          table: Parent
+          cardinality: "2 / 0–5"
+      - name: PostedAt
+        type: DATETIME-TZ
+        format: "99/99/9999 HH:MM:SS.SSS+HH:MM"
+        mandatory: true
+        initial: "?"
+        description: "When the child was posted"
+        gen: "Uniform over the history window"
+      - name: NoteText
+        type: CLOB
+        mandatory: false
+        initial: "?"
+        description: "Free-text note"
+        gen: "Generated prose"
+        lob:
+          area: FxLob
+          maxSize: "8K"
+          codepage: UTF-8
+          content: "free text"
+          fractionPopulated: 0.5
+          avgBytes: 1000
+          minBytes: 100
+          maxBytes: 8192
+    indexes:
+      - name: IxParentPosted
+        unique: false
+        purpose: "A parent's children, newest first"
+        components:
+          - { field: ParentId, order: asc }
+          - { field: PostedAt, order: desc }
+  - name: BenchmarkTableInfo
+    description: "Row counts and max IDs per table"
+    class: R
+    rows: 3
+    scaling: fixed
+    area: FxData
+    indexArea: FxIdx
+    fields:
+      - name: TableName
+        type: CHARACTER
+        format: "x(32)"
+        mandatory: true
+        initial: ""
+        description: "Exact table name"
+        gen: "One row per table"
+      - name: TableRowCount
+        type: INT64
+        format: ">>>>>>>>>>>9"
+        mandatory: true
+        initial: "0"
+        description: "Rows after the load"
+        gen: "Counted after the load"
+      - name: MaxId
+        type: INT64
+        format: ">>>>>>>>>>>9"
+        mandatory: true
+        initial: "0"
+        description: "Highest sequential ID"
+        gen: "Equals TableRowCount after the load"
+    indexes:
+      - name: UxTableName
+        unique: true
+        purpose: "Lookup by table name"
+        components:
+          - { field: TableName, order: asc }
